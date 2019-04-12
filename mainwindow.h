@@ -47,7 +47,7 @@ private:
     HintsWindow* hintsWindow;
     QString currLang, inputFile;
     QMovie* movie;
-    bool inputsReady, outputsReady, hintsReady;
+    bool inputsReady, hintsReady, acOutputReady, userOutputReady;
     bool procTerminate, chainTerminate, RIGCheckRunning;
     int timeOutValue;
     int chainIdx;
@@ -83,7 +83,9 @@ private slots:
     void multiOutputProblemDetected();
     void problemDescriptionReceived(const QString& url);
     void loadingFailedReceived();
-    void outputReceived(const QByteArray& output);
+    void userOutputReceived(const QByteArray& output, const int time);
+    void acOutputReceived(const QByteArray& output);
+    void executionFailedReceived(bool crashed);
 };
 
 #endif // MAINWINDOW_H

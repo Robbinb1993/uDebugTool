@@ -933,7 +933,7 @@ background: white;
              </widget>
             </item>
             <item>
-             <widget class="Editor" name="yourOut">
+             <widget class="Editor" name="userOut">
               <property name="font">
                <font>
                 <family>Courier</family>

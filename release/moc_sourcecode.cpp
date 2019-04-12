@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_SourceCode_t {
-    QByteArrayData data[12];
-    char stringdata0[162];
+    QByteArrayData data[15];
+    char stringdata0[186];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -35,21 +35,24 @@ QT_MOC_LITERAL(0, 0, 10), // "SourceCode"
 QT_MOC_LITERAL(1, 11, 13), // "outputArrived"
 QT_MOC_LITERAL(2, 25, 0), // ""
 QT_MOC_LITERAL(3, 26, 6), // "output"
-QT_MOC_LITERAL(4, 33, 19), // "loaderOutputArrived"
-QT_MOC_LITERAL(5, 53, 3), // "ret"
-QT_MOC_LITERAL(6, 57, 5), // "error"
-QT_MOC_LITERAL(7, 63, 17), // "executableCrashed"
-QT_MOC_LITERAL(8, 81, 19), // "executeProcFinished"
-QT_MOC_LITERAL(9, 101, 20), // "QProcess::ExitStatus"
-QT_MOC_LITERAL(10, 122, 16), // "executeProcError"
-QT_MOC_LITERAL(11, 139, 22) // "QProcess::ProcessError"
+QT_MOC_LITERAL(4, 33, 4), // "time"
+QT_MOC_LITERAL(5, 38, 19), // "loaderOutputArrived"
+QT_MOC_LITERAL(6, 58, 3), // "ret"
+QT_MOC_LITERAL(7, 62, 5), // "error"
+QT_MOC_LITERAL(8, 68, 15), // "executionFailed"
+QT_MOC_LITERAL(9, 84, 7), // "crashed"
+QT_MOC_LITERAL(10, 92, 19), // "executeProcFinished"
+QT_MOC_LITERAL(11, 112, 20), // "QProcess::ExitStatus"
+QT_MOC_LITERAL(12, 133, 16), // "executeProcError"
+QT_MOC_LITERAL(13, 150, 22), // "QProcess::ProcessError"
+QT_MOC_LITERAL(14, 173, 12) // "procTimedOut"
 
     },
-    "SourceCode\0outputArrived\0\0output\0"
+    "SourceCode\0outputArrived\0\0output\0time\0"
     "loaderOutputArrived\0ret\0error\0"
-    "executableCrashed\0executeProcFinished\0"
+    "executionFailed\0crashed\0executeProcFinished\0"
     "QProcess::ExitStatus\0executeProcError\0"
-    "QProcess::ProcessError"
+    "QProcess::ProcessError\0procTimedOut"
 };
 #undef QT_MOC_LITERAL
 
@@ -59,7 +62,7 @@ static const uint qt_meta_data_SourceCode[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       5,   14, // methods
+       6,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -67,22 +70,24 @@ static const uint qt_meta_data_SourceCode[] = {
        3,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   39,    2, 0x06 /* Public */,
-       4,    3,   42,    2, 0x06 /* Public */,
-       7,    0,   49,    2, 0x06 /* Public */,
+       1,    2,   44,    2, 0x06 /* Public */,
+       5,    3,   49,    2, 0x06 /* Public */,
+       8,    1,   56,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       8,    2,   50,    2, 0x08 /* Private */,
-      10,    1,   55,    2, 0x08 /* Private */,
+      10,    2,   59,    2, 0x08 /* Private */,
+      12,    1,   64,    2, 0x08 /* Private */,
+      14,    0,   67,    2, 0x08 /* Private */,
 
  // signals: parameters
-    QMetaType::Void, QMetaType::QByteArray,    3,
-    QMetaType::Void, QMetaType::Int, QMetaType::QByteArray, QMetaType::QByteArray,    5,    6,    3,
-    QMetaType::Void,
+    QMetaType::Void, QMetaType::QByteArray, QMetaType::Int,    3,    4,
+    QMetaType::Void, QMetaType::Int, QMetaType::QByteArray, QMetaType::QByteArray,    6,    7,    3,
+    QMetaType::Void, QMetaType::Bool,    9,
 
  // slots: parameters
-    QMetaType::Void, QMetaType::Int, 0x80000000 | 9,    2,    2,
-    QMetaType::Void, 0x80000000 | 11,    2,
+    QMetaType::Void, QMetaType::Int, 0x80000000 | 11,    2,    2,
+    QMetaType::Void, 0x80000000 | 13,    2,
+    QMetaType::Void,
 
        0        // eod
 };
@@ -93,17 +98,18 @@ void SourceCode::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         SourceCode *_t = static_cast<SourceCode *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->outputArrived((*reinterpret_cast< const QByteArray(*)>(_a[1]))); break;
+        case 0: _t->outputArrived((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const int(*)>(_a[2]))); break;
         case 1: _t->loaderOutputArrived((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< const QByteArray(*)>(_a[2])),(*reinterpret_cast< const QByteArray(*)>(_a[3]))); break;
-        case 2: _t->executableCrashed(); break;
+        case 2: _t->executionFailed((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 3: _t->executeProcFinished((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< QProcess::ExitStatus(*)>(_a[2]))); break;
         case 4: _t->executeProcError((*reinterpret_cast< QProcess::ProcessError(*)>(_a[1]))); break;
+        case 5: _t->procTimedOut(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
         {
-            typedef void (SourceCode::*_t)(const QByteArray & );
+            typedef void (SourceCode::*_t)(const QByteArray & , const int );
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&SourceCode::outputArrived)) {
                 *result = 0;
                 return;
@@ -117,8 +123,8 @@ void SourceCode::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
             }
         }
         {
-            typedef void (SourceCode::*_t)();
-            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&SourceCode::executableCrashed)) {
+            typedef void (SourceCode::*_t)(bool );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&SourceCode::executionFailed)) {
                 *result = 2;
                 return;
             }
@@ -151,21 +157,21 @@ int SourceCode::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 5)
+        if (_id < 6)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 5;
+        _id -= 6;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 5)
+        if (_id < 6)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 5;
+        _id -= 6;
     }
     return _id;
 }
 
 // SIGNAL 0
-void SourceCode::outputArrived(const QByteArray & _t1)
+void SourceCode::outputArrived(const QByteArray & _t1, const int _t2)
 {
-    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 
@@ -177,9 +183,10 @@ void SourceCode::loaderOutputArrived(int _t1, const QByteArray & _t2, const QByt
 }
 
 // SIGNAL 2
-void SourceCode::executableCrashed()
+void SourceCode::executionFailed(bool _t1)
 {
-    QMetaObject::activate(this, &staticMetaObject, 2, nullptr);
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 2, _a);
 }
 struct qt_meta_stringdata_CompiledSourceCode_t {
     QByteArrayData data[4];

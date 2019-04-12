@@ -75,7 +75,7 @@ public:
     QLabel *label_5;
     QHBoxLayout *horizontalLayout_6;
     Editor *acOut;
-    Editor *yourOut;
+    Editor *userOut;
     QSpacerItem *verticalSpacer_4;
     QMenuBar *menuBar;
     QStatusBar *statusBar;
@@ -584,15 +584,15 @@ public:
 
         horizontalLayout_6->addWidget(acOut);
 
-        yourOut = new Editor(centralWidget);
-        yourOut->setObjectName(QStringLiteral("yourOut"));
-        yourOut->setFont(font5);
-        yourOut->setLayoutDirection(Qt::LeftToRight);
-        yourOut->setStyleSheet(QLatin1String("QPlainTextEdit {\n"
+        userOut = new Editor(centralWidget);
+        userOut->setObjectName(QStringLiteral("userOut"));
+        userOut->setFont(font5);
+        userOut->setLayoutDirection(Qt::LeftToRight);
+        userOut->setStyleSheet(QLatin1String("QPlainTextEdit {\n"
 "background: white;\n"
 "}"));
 
-        horizontalLayout_6->addWidget(yourOut);
+        horizontalLayout_6->addWidget(userOut);
 
 
         verticalLayout_2->addLayout(horizontalLayout_6);

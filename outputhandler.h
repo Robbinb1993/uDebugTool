@@ -16,25 +16,24 @@ class OutputHandler : public QObject {
 public:
     OutputHandler(QObject* parent, Editor * const, Editor * const, QLineEdit* const);
     void clear();
-    void yourOutputReceived(const QByteArray&);
-    void yourProgCrashed();
-    void yourProgTimedOut();
+    void acOutputReceived(const QByteArray&);
+    void userOutputReceived(const QByteArray&);
+    void userProgCrashed();
+    void userProgTimedOut();
     void toggleFilter();
     void setExecutionTime(const int t);
     void enableChainCheck();
     void disableChainCheck();
+
 private:
     Editor * const acOut;
-    Editor * const yourOut;
+    Editor * const userOut;
     QLineEdit * const resultLine;
     QTextCharFormat green, red, white;
-    std::string acTxt, yourTxt;
+    std::string acTxt, userTxt;
     int executionTime;
-    bool acReady, yourReady, cleared, filter, chainCheck;
+    bool acReady, userReady, cleared, filter, chainCheck;
     void compareOutputs();
-private slots:
-    void acOutputReceived(const QByteArray&);
-    void acOutputErrorOccurred();
 signals:
     void chainResult(const bool success);
     void comparisonFinished();

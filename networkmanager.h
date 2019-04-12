@@ -41,7 +41,6 @@ signals:
     void hintsArrived(const QByteArray&);
     void hintOutputArrived(const QByteArray&);
     void testcaseOutputArrived(const QByteArray&);
-    void acOutputError();
     void probNameReady(const QString& probName);
     void multiOutputProblem();
     void problemDescriptionReady(const QString& url);

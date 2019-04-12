@@ -21,20 +21,15 @@ NetworkManager::NetworkManager(QObject *parent) : QObject(parent),
 }//constructor
 
 NetworkManager::~NetworkManager() {
+    clear();
 }//destructor
 
 void NetworkManager::clear() {
-    curlGetInputs->kill();
-    curlPostInput->kill();
-    curlGetTestcase->kill();
-    curlGetHints->kill();
-    curlGetHint->kill();
-
-    curlGetInputs->waitForFinished();
-    curlPostInput->waitForFinished();
-    curlGetTestcase->waitForFinished();
-    curlGetHints->waitForFinished();
-    curlGetHint->waitForFinished();
+    curlGetInputs->close();
+    curlPostInput->close();
+    curlGetTestcase->close();
+    curlGetHints->close();
+    curlGetHint->close();
 }//clear
 
 void NetworkManager::scrape(const QString judgeName, const QString problemID) {
@@ -80,7 +75,6 @@ void NetworkManager::scrapingDone(QNetworkReply* reply) {
 }//scrapingDone
 
 void NetworkManager::searchInputs(const QString& judgeName, const QString& id) {
-    curlGetInputs->terminate();
     curlGetInputs->close();
     QStringList args;
     args.append("-X");
@@ -94,7 +88,6 @@ void NetworkManager::searchInputs(const QString& judgeName, const QString& id) {
 }//searchInputs
 
 void NetworkManager::searchHints(const QString& judgeName, const QString& id) {
-    curlGetHints->terminate();
     curlGetHints->close();
     QStringList args;
     args.append("-X");
@@ -108,7 +101,6 @@ void NetworkManager::searchHints(const QString& judgeName, const QString& id) {
 }//searchInputs
 
 void NetworkManager::getTestcase(const QString& id) {
-    curlGetTestcase->terminate();
     curlGetTestcase->close();
     QStringList args;
     args.append("-X");
@@ -122,7 +114,6 @@ void NetworkManager::getTestcase(const QString& id) {
 }//getTestcase
 
 void NetworkManager::getHint(const QString& id) {
-    curlGetHint->terminate();
     curlGetHint->close();
     QStringList args;
     args.append("-X");
@@ -136,7 +127,6 @@ void NetworkManager::getHint(const QString& id) {
 }//getHint
 
 void NetworkManager::postCustomInput(const QString& judgeName, const QString& id, const QString& testcase) {
-    curlPostInput->terminate();
     curlPostInput->close();
     QStringList args;
     QFile in(inputFile);
@@ -173,29 +163,25 @@ void NetworkManager::inputPostError(QProcess::ProcessError error) {
 
 void NetworkManager::getInputsFinished(int, QProcess::ExitStatus e) {
     if (e == QProcess::ExitStatus::NormalExit)
-        emit(inputsArrived(curlGetInputs->readAllStandardOutput()));
+        inputsArrived(curlGetInputs->readAllStandardOutput());
 }//getInputsFinished
 
 void NetworkManager::getHintsFinished(int, QProcess::ExitStatus e) {
     if (e == QProcess::ExitStatus::NormalExit)
-        emit(hintsArrived(curlGetHints->readAllStandardOutput()));
+        hintsArrived(curlGetHints->readAllStandardOutput());
 }//getHintsFinished
 
 void NetworkManager::getAcOutputFinished(int, QProcess::ExitStatus e) {
-    qDebug() << e;
-    if (e == QProcess::ExitStatus::CrashExit) {
-        emit(acOutputError());
-    }//if
-    else if (e == QProcess::ExitStatus::NormalExit)
-        emit(acOutputArrived(curlPostInput->readAllStandardOutput()));
+    if (e == QProcess::ExitStatus::NormalExit)
+        acOutputArrived(curlPostInput->readAllStandardOutput());
 }//getAcOutputFinished
 
 void NetworkManager::getTestcaseFinished(int, QProcess::ExitStatus) {
-    emit(testcaseOutputArrived(curlGetTestcase->readAllStandardOutput()));
+    testcaseOutputArrived(curlGetTestcase->readAllStandardOutput());
 }//getTestcaseFinished
 
 void NetworkManager::getHintFinished(int, QProcess::ExitStatus) {
-    emit(hintOutputArrived(curlGetHint->readAllStandardOutput()));
+    hintOutputArrived(curlGetHint->readAllStandardOutput());
 }//getHintFinished
 
 

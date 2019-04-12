@@ -4,25 +4,31 @@
 #include <QDir>
 #include <QTextStream>
 #include <QDebug>
+
 SourceCode::SourceCode(QObject *parent) : QObject(parent) {
-    executableDirectoryPath = QDir::currentPath() + "/executables";
+    QString executableDirectoryPath = QDir::currentPath() + "/executables";
     executableFilePath = executableDirectoryPath + "/a";
     executeProc = new QProcess(this);
     connect(executeProc, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(executeProcFinished(int, QProcess::ExitStatus)));
     connect(executeProc, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(executeProcError(QProcess::ProcessError)));
+    connect(&timer, SIGNAL(timeout()), this, SLOT(procTimedOut()));
 }
 
 void SourceCode::executeProcFinished(int, QProcess::ExitStatus status) {
-    qDebug() << "finished";
-    qDebug() << executeProc->readAllStandardOutput();
-    if (status == QProcess::ExitStatus::CrashExit)
-        executableCrashed();
+    if (status == QProcess::ExitStatus::NormalExit)
+        outputArrived(executeProc->readAllStandardOutput(), timeMeasure.elapsed());
     else
-        outputArrived(executeProc->readAllStandardOutput());
+        executionFailed(!timedOut);
 }
 
 void SourceCode::executeProcError(QProcess::ProcessError) {
     qDebug("execute process error");
+    executionFailed(!timedOut);
+}
+
+void SourceCode::procTimedOut() {
+    timedOut = true;
+    executeProc->close();
 }
 
 void SourceCode::addFlagsToList(QStringList& compileList) {
@@ -40,7 +46,6 @@ void SourceCode::createCodeFile() {
     file.setFileName(executableFilePath + codeExtension);
     if (file.exists())
         file.remove();
-    qDebug() << "Test1";
     if (file.open(QIODevice::ReadWrite)) {
         QTextStream stream(&file);
         file.write(code.toStdString().c_str());
@@ -61,26 +66,18 @@ QString SourceCode::getLoaderType() {
         return "interpreter";
 }
 
-void SourceCode::runExecutable(const QString &input) {    
+void SourceCode::runExecutable(const QString &input, int timeOutValue) {
     executeProc->start(executableFilePath);
     executeProc->write(input.toStdString().c_str());
     executeProc->closeWriteChannel();
+    timedOut = false;
+    timeMeasure.start();
+    timer.start(timeOutValue);
 }
 
 void SourceCode::terminateExecution() {
     executeProc->terminate();
     executeProc->close();
-}
-
-void SourceCode::removeExecutables() {
-    QStringList extensions;
-    extensions << "" << ".exe";
-    QFile file;
-    foreach (const QString& extension, extensions) {
-        file.setFileName(executableDirectoryPath + extension);
-        if (file.exists())
-            file.remove();
-    }//foreach
 }
 
 CompiledSourceCode::CompiledSourceCode(QObject *parent) : SourceCode(parent) {
@@ -91,16 +88,15 @@ CompiledSourceCode::CompiledSourceCode(QObject *parent) : SourceCode(parent) {
 }
 
 void CompiledSourceCode::compileProcFinished(int exit, QProcess::ExitStatus e) {
-    qDebug() << exit << compileProc->readAllStandardOutput() << compileProc->readAllStandardError() << "!!!!";
+    loaderOutputArrived(exit, compileProc->readAllStandardError(), compileProc->readAllStandardOutput());
     if (exit == 0) {
         compiled = true;        
-        runExecutable(inputBuffer);
+        runExecutable(inputBuffer, timeOutValueBuffer);
     }
 }
 
 void CompiledSourceCode::compile() {    
     terminateExecution();
-    removeExecutables();
     compileProc->terminate();
     compileProc->close();
     QStringList compileList;
@@ -117,13 +113,14 @@ void CompiledSourceCode::set(QString const& newCode) {
     inputBuffer.clear();
 }
 
-void CompiledSourceCode::execute(const QString& input) {
+void CompiledSourceCode::execute(const QString& input, const int timeOutValue) {
     if (!compiled) {
         inputBuffer = input;
+        timeOutValueBuffer = timeOutValue;
         compile();
     }
     else
-        runExecutable(input);
+        runExecutable(input, timeOutValue);
 }
 
 SourceCodeCType::SourceCodeCType(QObject* parent, const QString& type) : CompiledSourceCode(parent) {

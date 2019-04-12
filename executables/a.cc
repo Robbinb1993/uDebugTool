@@ -1,32 +1,49 @@
-#include <iostream>
-#include "string.h"
-#include <algorithm>
+#include<cstdio>
+#include<vector>
+#include<algorithm>
+#include<queue>
+#include<cstdlib>
+#define MAX 100000+5
 
 using namespace std;
 
-int memo[1000000];
-
-int f(long long n)
+int main()
 {
-    if(n==1) return 1;
-
-    if(n>=1000000)
+    int t,tcase,n,q;
+    vector<int>num;
+    vector<int>test;
+    int a,b;
+    while(scanf("%d",&t)==1)
     {
-        if(n%2==0) return 1+f(n/2);
-        else return 1+f(3*n+1);
+        tcase=1;
+        while(t--)
+        {
+            scanf("%d %d",&n,&q);
+            num.clear();
+            for(int i=0;i<n;i++)
+            {
+                scanf("%d",&a);
+                num.push_back(a);
+            }
+            printf("Case %d:\n",tcase++);
+            while(q--)
+            {
+
+                scanf("%d %d",&a,&b);
+                test.clear();
+                if(b-a>1000)printf("0\n");
+                else
+                {
+                    for(int i=a;i<=b;i++)
+                    test.push_back(num[i]);
+                    sort(test.begin(),test.end());
+                    int ans=10000;
+                    for(int i=1;i<test.size();i++)
+                        ans=min(ans,test[i]-test[i-1]);
+                    printf("%d\n",ans);
+                }
+            }
+        }
     }
-
-    if(memo[n]!=-1) return memo[n];
-
-    int x;
-    if(n%2==0) x=1+f(n/2);
-    else x=1+f(3*n+1);
-    memo[n]=x;
-    return x;
-
-}
-
-int main() {
-   while (true) {}
-   return 0;
+    return 0;
 }

@@ -4,7 +4,7 @@
 
 void CodeEditor::setLayout() {    
     this->setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-    ui->compilerOutput->viewport()->setCursor(Qt::ArrowCursor);
+    ui->loaderOutput->viewport()->setCursor(Qt::ArrowCursor);
 
     QTextOption option = ui->codeEditor->document()->defaultTextOption();
     option.setTabStop(QFontMetricsF(ui->codeEditor->font()).width(QChar(' ')) * 4);
@@ -29,7 +29,7 @@ CodeEditor::CodeEditor(const QString d, const QString windowName, QWidget *paren
 
     QSettings settings(QDir::currentPath() + QString("/config.ini"), QSettings::IniFormat);
     settings.beginGroup("lang");
-    ui->languageSelect->setCurrentIndex(settings.value("idx").toInt());    
+    ui->languageSelect->setCurrentIndex(settings.value("idx").toInt());   
 }
 
 CodeEditor::~CodeEditor() {
@@ -54,26 +54,34 @@ void CodeEditor::setSourcecode(const QString& langName) {
         qDebug("Language could not be found");
         sourcecode = new SourceCode(this);
     }
-    connect(sourcecode, SIGNAL(outputArrived(const QByteArray&)), this, SLOT(outputReceived(const QByteArray&)));
+
+    qDebug() << "CONNECT";
+    connect(sourcecode, SIGNAL(outputArrived(const QByteArray&, const int)), this, SLOT(outputReceived(const QByteArray&, const int)));
     connect(sourcecode, SIGNAL(loaderOutputArrived(int, const QByteArray&, const QByteArray&)), this, SLOT(loaderOutputReceived(int, const QByteArray&, const QByteArray&)));
+    connect(sourcecode, SIGNAL(executionFailed(bool)), this, SLOT(executionFailArrived(bool)));
 
     sourcecode->setFlags(flags);
     sourcecode->setPath(path);
 
     ui->loaderButton->setText("Load " + sourcecode->getLoaderType());
+    QString loaderLabelText = sourcecode->getLoaderType() + " output";
+    loaderLabelText[0] = loaderLabelText[0].toUpper();
+    ui->loaderLabel->setText(loaderLabelText);
 }
 
-void CodeEditor::execute(const QString& input) {
-    qDebug() << "2nd EXECUTE request";
+void CodeEditor::execute(const QString& input, const int timeOutValue) {
     sourcecode->set(ui->codeEditor->toPlainText());
-    sourcecode->execute(input);
+    sourcecode->execute(input, timeOutValue);
 }
 
 void CodeEditor::loaderOutputReceived(int ret, const QByteArray& error, const QByteArray& output) {
-    if (ret != 0)
-        ui->compilerOutput->setPlainText(error + "\n" + output);        
+    if (ret != 0) {
+        ui->loaderOutput->setPlainText("Compiler error:\n" + error + "\n" + output);
+        raise();
+        show();
+    }//if
     else
-        ui->compilerOutput->setPlainText("Code succesfully " + sourcecode->getLanguageType());
+        ui->loaderOutput->setPlainText("Code succesfully " + sourcecode->getLanguageType() + ".\n\n" + error + "\n" + output);
 }
 
 void CodeEditor::on_loaderButton_clicked() {

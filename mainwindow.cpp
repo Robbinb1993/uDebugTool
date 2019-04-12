@@ -33,11 +33,11 @@ void MainWindow::setTimeout() {
     settings.beginGroup("timeout");
     timeOutValue = settings.value("time").toInt();
     QString txt = "Time limit: ";
-    if (timeOutValue >= 100000) {
+    if (timeOutValue >= 100000) { //display in seconds
         txt.append(std::to_string(timeOutValue / 1000).c_str());
         txt.append(" s");
     }//if
-    else {
+    else { //display in milliseconds
         txt.append(std::to_string(timeOutValue).c_str());
         txt.append(" ms");
     }//else
@@ -59,29 +59,29 @@ MainWindow::MainWindow(QWidget *parent) :
     chainChecker = new InputChainChecker(this);
     connect(chainChecker, SIGNAL(windowClosed()), this, SLOT(terminateChainCheck()));
 
-    rigchecker = new RIGChecker(parent);
+    rigchecker = new RIGChecker(this);
     connect(rigchecker, SIGNAL(windowClosed()), this, SLOT(terminateChainCheck()));
     connect(rigchecker, SIGNAL(RIGCheckStart()), this, SLOT(RIGStart()));
     connect(rigchecker, SIGNAL(sendInput(const QByteArray&)), this, SLOT(RIGInputReceived(const QByteArray&)));
 
-    codeEditor = new CodeEditor("executables", "Code Loader", parent);
-    connect(codeEditor, SIGNAL(outputReady(const QByteArray&)), this, SLOT(outputReceived(const QByteArray&)));
+    codeEditor = new CodeEditor("executables", "Code Loader", this);
+    connect(codeEditor, SIGNAL(outputReady(const QByteArray&, const int)), this, SLOT(userOutputReceived(const QByteArray&, const int)));
+    connect(codeEditor, SIGNAL(executionFailed(bool)), this, SLOT(executionFailedReceived(bool)));
 
-    outHandler = new OutputHandler(this, ui->acOut, ui->yourOut, ui->resultLine);
+    outHandler = new OutputHandler(this, ui->acOut, ui->userOut, ui->resultLine);
     connect(outHandler, SIGNAL(chainResult(bool)), this, SLOT(chainResultReceived(bool)));
     connect(outHandler, SIGNAL(comparisonFinished()), this, SLOT(comparisonFinished()));
-    connect(ui->acOut->verticalScrollBar(), &QAbstractSlider::valueChanged, ui->yourOut->verticalScrollBar(), &QAbstractSlider::setValue);
-    connect(ui->yourOut->verticalScrollBar(), &QAbstractSlider::valueChanged, ui->acOut->verticalScrollBar(), &QAbstractSlider::setValue);
-    connect(ui->acOut->horizontalScrollBar(), &QAbstractSlider::valueChanged, ui->yourOut->horizontalScrollBar(), &QAbstractSlider::setValue);
-    connect(ui->yourOut->horizontalScrollBar(), &QAbstractSlider::valueChanged, ui->acOut->horizontalScrollBar(), &QAbstractSlider::setValue);
+    connect(ui->acOut->verticalScrollBar(), &QAbstractSlider::valueChanged, ui->userOut->verticalScrollBar(), &QAbstractSlider::setValue);
+    connect(ui->userOut->verticalScrollBar(), &QAbstractSlider::valueChanged, ui->acOut->verticalScrollBar(), &QAbstractSlider::setValue);
+    connect(ui->acOut->horizontalScrollBar(), &QAbstractSlider::valueChanged, ui->userOut->horizontalScrollBar(), &QAbstractSlider::setValue);
+    connect(ui->userOut->horizontalScrollBar(), &QAbstractSlider::valueChanged, ui->acOut->horizontalScrollBar(), &QAbstractSlider::setValue);
     ui->inputTable->setTableType(TableTypes::InputTable);
     connect(ui->inputTable, SIGNAL(sendInfo(const QString&)), this, SLOT(changeTestcase(const QString&)));
     connect(ui->inputTable, SIGNAL(ready()), this, SLOT(inputFetchingFinished()));
 
     netmgr = new NetworkManager(this);
     connect(ui->inputTable, SIGNAL(getInfo(const QString&)), netmgr, SLOT(getTestcase(const QString&)));
-    connect(netmgr, SIGNAL(acOutputError()), outHandler, SLOT(acOutputErrorOccurred()));
-    connect(netmgr, SIGNAL(acOutputArrived(const QByteArray&)), outHandler, SLOT(acOutputReceived(const QByteArray&)));
+    connect(netmgr, SIGNAL(acOutputArrived(const QByteArray&)), this, SLOT(acOutputReceived(const QByteArray&)));
     connect(netmgr, SIGNAL(testcaseOutputArrived(const QByteArray&)), this, SLOT(testcaseReceived(const QByteArray&)));
     connect(netmgr, SIGNAL(inputsArrived(const QByteArray&)), this, SLOT(inputsReceived(const QByteArray&)));
     connect(netmgr, SIGNAL(hintsArrived(const QByteArray&)), hintsWindow, SLOT(hintsReceived(const QByteArray&)));
@@ -97,9 +97,12 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 //EVENTS
-bool MainWindow::eventFilter(QObject *, QEvent *event) {
-    if (event && event->type() == QEvent::WindowActivate)
-        raise();
+bool MainWindow::eventFilter(QObject *, QEvent *event) {    
+    if (event && event->type() == QEvent::WindowActivate) {
+        codeEditor->hide();
+        rigchecker->hide();
+        return true;
+    }//if
     return false;
 }
 
@@ -141,8 +144,17 @@ void MainWindow::testcaseReceived(const QByteArray& result) {
     ui->inputTable->addInfo(result);
 }
 
-void MainWindow::outputReceived(const QByteArray& output) {
-    outHandler->yourOutputReceived(output);
+void MainWindow::userOutputReceived(const QByteArray& output, const int time) {
+    outHandler->userOutputReceived(output);
+    outHandler->setExecutionTime(time);
+    userOutputReady = true;
+    checkLoader();
+}
+
+void MainWindow::acOutputReceived(const QByteArray& output) {
+    outHandler->acOutputReceived(output);
+    acOutputReady = true;
+    checkLoader();
 }
 
 void MainWindow::on_searchProb_clicked() {
@@ -165,7 +177,7 @@ void MainWindow::on_searchProb_clicked() {
     ui->inputTable->resetting = true;
     hintsWindow->clear();
 
-    netmgr->clear(); //Kill all running network processes
+    netmgr->clear(); //Close all running network processes
 
     inputsReady = hintsReady = false;
     netmgr->searchInputs(judges[ui->judgeSelect->currentIndex()], ui->problemId->text());
@@ -187,7 +199,7 @@ bool MainWindow::readyToCheck() {
 }
 
 void MainWindow::checkLoader() {
-    if (inputsReady && outputsReady && hintsReady)
+    if (inputsReady && acOutputReady && userOutputReady && hintsReady)
         ui->loadLabel->hide();
 }
 
@@ -196,10 +208,11 @@ void MainWindow::on_checkIn_clicked() {
         return;    
     ui->loadLabel->show();    
     outHandler->disableChainCheck();
+    outHandler->clear();
+    acOutputReady = userOutputReady = false;
     QString input = ui->customIn->toPlainText();
     netmgr->postCustomInput(judges[ui->judgeSelect->currentIndex()], ui->problemId->text(), input);
-    qDebug() << "EXECUTE REQUEST";
-    codeEditor->execute(input);    
+    codeEditor->execute(input, timeOutValue);
     ui->acOut->setPlainText("Accepted output\nis being fetched.");
 }
 
@@ -232,7 +245,6 @@ void MainWindow::on_checkRIG_clicked() {
 
 void MainWindow::RIGInputReceived(const QByteArray& in) {
     ui->customIn->setPlainText(QString::fromLocal8Bit(in));
-    //executeProgs(in);
 }
 
 void MainWindow::RIGStart() {
@@ -247,10 +259,8 @@ void MainWindow::RIGStart() {
 }
 
 void MainWindow::executeNextInTable() {
-    if (chainIdx <= ui->inputTable->rowCount()) {
+    if (chainIdx <= ui->inputTable->rowCount())
         ui->customIn->setPlainText(ui->inputTable->requestInfo(chainIdx - 1));
-        //executeProgs(ui->customIn->toPlainText());
-    }
     else {
        checkLoader();
        outHandler->clear();
@@ -318,16 +328,7 @@ void MainWindow::on_timeLimitIn_editingFinished() {
         settings.beginGroup("timeout");
         settings.setValue("time", timeOutValue);
     }
-    QString txt = "Time limit: ";
-    if (timeOutValue >= 100000) {
-        txt.append(std::to_string(timeOutValue / 1000).c_str());
-        txt.append(" s");
-    }
-    else {
-        txt.append(std::to_string(timeOutValue).c_str());
-        txt.append(" ms");
-    }
-    ui->timeLimitIn->setText(txt);
+    setTimeout();
 }
 
 void MainWindow::on_judgeSelect_currentIndexChanged(int) {
@@ -348,6 +349,15 @@ void MainWindow::reqHint(const QString& id) {
 }
 
 void MainWindow::loadingFailedReceived() {
-    outputsReady = true;
+    userOutputReady = true;
     outHandler->clear();
+}
+
+void MainWindow::executionFailedReceived(bool crashed) {
+    if (crashed)
+        outHandler->userProgCrashed();
+    else
+        outHandler->userProgTimedOut();
+    userOutputReady = true;
+    checkLoader();
 }

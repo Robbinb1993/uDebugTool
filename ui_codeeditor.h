@@ -42,8 +42,8 @@ public:
     QSpacerItem *verticalSpacer;
     QLabel *label;
     Editor *codeEditor;
-    QLabel *label_2;
-    QPlainTextEdit *compilerOutput;
+    QLabel *loaderLabel;
+    QPlainTextEdit *loaderOutput;
     QSpacerItem *verticalSpacer_2;
     QHBoxLayout *horizontalLayout_2;
 
@@ -205,29 +205,29 @@ public:
 
         verticalLayout->addWidget(codeEditor);
 
-        label_2 = new QLabel(CodeEditor);
-        label_2->setObjectName(QStringLiteral("label_2"));
-        label_2->setMinimumSize(QSize(106, 20));
-        label_2->setFont(font1);
-        label_2->setStyleSheet(QLatin1String("border: 1px solid #333333;\n"
+        loaderLabel = new QLabel(CodeEditor);
+        loaderLabel->setObjectName(QStringLiteral("loaderLabel"));
+        loaderLabel->setMinimumSize(QSize(106, 20));
+        loaderLabel->setFont(font1);
+        loaderLabel->setStyleSheet(QLatin1String("border: 1px solid #333333;\n"
 "background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #797979, stop:0.48 #696969, stop:0.52 #5e5e5e, stop:1 #4f4f4f);\n"
 "padding: 1px 23px 1px 3px;\n"
 "min-width: 6em;\n"
 "color: #ffffff;\n"
 "text-align: center;"));
-        label_2->setAlignment(Qt::AlignCenter);
+        loaderLabel->setAlignment(Qt::AlignCenter);
 
-        verticalLayout->addWidget(label_2);
+        verticalLayout->addWidget(loaderLabel);
 
-        compilerOutput = new QPlainTextEdit(CodeEditor);
-        compilerOutput->setObjectName(QStringLiteral("compilerOutput"));
-        compilerOutput->setFont(font2);
-        compilerOutput->setStyleSheet(QLatin1String("QPlainTextEdit {\n"
+        loaderOutput = new QPlainTextEdit(CodeEditor);
+        loaderOutput->setObjectName(QStringLiteral("loaderOutput"));
+        loaderOutput->setFont(font2);
+        loaderOutput->setStyleSheet(QLatin1String("QPlainTextEdit {\n"
 "background: white;\n"
 "}"));
-        compilerOutput->setReadOnly(true);
+        loaderOutput->setReadOnly(true);
 
-        verticalLayout->addWidget(compilerOutput);
+        verticalLayout->addWidget(loaderOutput);
 
         verticalSpacer_2 = new QSpacerItem(20, 2, QSizePolicy::Minimum, QSizePolicy::Fixed);
 
@@ -264,8 +264,8 @@ public:
         flagLine->setPlaceholderText(QApplication::translate("CodeEditor", "Insert flags", nullptr));
         submitCodeButton->setText(QApplication::translate("CodeEditor", "Open code file", nullptr));
         label->setText(QApplication::translate("CodeEditor", "Editor", nullptr));
-        label_2->setText(QApplication::translate("CodeEditor", "Compiler output", nullptr));
-        compilerOutput->setPlainText(QString());
+        loaderLabel->setText(QApplication::translate("CodeEditor", "Output", nullptr));
+        loaderOutput->setPlainText(QString());
     } // retranslateUi
 
 };

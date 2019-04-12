@@ -5,6 +5,8 @@
 #include <QProcess>
 #include <QObject>
 #include <QQueue>
+#include <QTime>
+#include <QTimer>
 
 enum SourceCodeType {Compiled, Interpreted};
 
@@ -12,8 +14,8 @@ class SourceCode : public QObject {
     Q_OBJECT
     public:
         explicit SourceCode(QObject*);
-        virtual ~SourceCode() {}
-        virtual void execute(const QString&) {}
+        virtual ~SourceCode() {executeProc->close();}
+        virtual void execute(const QString&, const int timeOutValue) {}
         virtual void set(const QString& newCode) {code = newCode;}
         void setPath(const QString& newPath) {workPath = newPath;}
         void setFlags(const QString& newFlags) {flags = newFlags;}
@@ -24,9 +26,8 @@ class SourceCode : public QObject {
         void createCodeFile();
         void setCodeExtension(const QString& extension) {codeExtension = extension;}
         void setType(const SourceCodeType& t) {type = t;}
-        void runExecutable(const QString& input);
+        void runExecutable(const QString& input, int timeOutValue);
         void terminateExecution();
-        void removeExecutables();
         QString getWorkPath() {return workPath;}
         QString getExecutableFilePath() {return executableFilePath;}
         QString getCodeExtension() {return codeExtension;}
@@ -36,30 +37,35 @@ class SourceCode : public QObject {
         QString code;
         QString workPath;
         QString codeExtension;
-        QString executableDirectoryPath;
         QString executableFilePath;
         QProcess *executeProc;
         SourceCodeType type;
+        QTime timeMeasure;
+        QTimer timer;
+        bool timedOut;
     private slots:
         void executeProcFinished(int, QProcess::ExitStatus);
         void executeProcError(QProcess::ProcessError);
+        void procTimedOut();
     signals:
-        void outputArrived(const QByteArray& output);
+        void outputArrived(const QByteArray& output, const int time);
         void loaderOutputArrived(int ret, const QByteArray& error, const QByteArray& output);
-        void executableCrashed();
+        void executionFailed(bool crashed);
 };
 
 class CompiledSourceCode : public SourceCode {
     Q_OBJECT
     public:
         explicit CompiledSourceCode(QObject*);
+        virtual ~CompiledSourceCode() override {compileProc->close();}
         void set(const QString &newCode) override;
-        void execute(const QString& input) override;
+        void execute(const QString& input, const int timeOutValue) override;
     private:
         void compile();        
         QProcess *compileProc;
         bool compiled = false;
         QString inputBuffer;
+        int timeOutValueBuffer;
     private slots:
         void compileProcFinished(int, QProcess::ExitStatus);
 };

@@ -297,7 +297,7 @@ background: white;
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label_2">
+      <widget class="QLabel" name="loaderLabel">
        <property name="minimumSize">
         <size>
          <width>106</width>
@@ -319,7 +319,7 @@ color: #ffffff;
 text-align: center;</string>
        </property>
        <property name="text">
-        <string>Compiler output</string>
+        <string>Output</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -327,7 +327,7 @@ text-align: center;</string>
       </widget>
      </item>
      <item>
-      <widget class="QPlainTextEdit" name="compilerOutput">
+      <widget class="QPlainTextEdit" name="loaderOutput">
        <property name="font">
         <font>
          <family>Courier</family>
