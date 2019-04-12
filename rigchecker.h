@@ -3,7 +3,6 @@
 
 #include <QDialog>
 #include "codeeditor.h"
-#include "executeinfo.h"
 
 namespace Ui {
 class RIGChecker;
@@ -14,7 +13,7 @@ class RIGChecker : public QDialog
     Q_OBJECT
 
 public:
-    explicit RIGChecker(const ExecuteInfo* e, QWidget *parent = 0);
+    explicit RIGChecker(QWidget *parent = 0);
     void fetchNextInput();
     int getIterations();
     void clear();
@@ -34,7 +33,6 @@ private:
     Ui::RIGChecker *ui;
     CodeEditor* codeEditor;
     QString programPath, currLang;
-    const ExecuteInfo* executer;
     QProcess* proc;
     int iterations;
 

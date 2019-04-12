@@ -35,7 +35,8 @@ SOURCES += \
     lineedit.cpp \
     rigchecker.cpp \
     hintswindow.cpp \
-    infotable.cpp
+    infotable.cpp \
+    sourcecode.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -47,10 +48,10 @@ HEADERS += \
     inputchainchecker.h \
     lineedit.h \
     rigchecker.h \
-    executeinfo.h \
     hintswindow.h \
     hintswindow.h \
-    infotable.h
+    infotable.h \
+    sourcecode.h
 
 FORMS += \
         mainwindow.ui \

@@ -36,9 +36,8 @@ public:
     QHBoxLayout *horizontalLayout;
     QHBoxLayout *horizontalLayout_3;
     QComboBox *languageSelect;
-    QPushButton *loadCompilerButton;
+    QPushButton *loaderButton;
     QLineEdit *flagLine;
-    QPushButton *compileButton;
     QPushButton *submitCodeButton;
     QSpacerItem *verticalSpacer;
     QLabel *label;
@@ -80,6 +79,7 @@ public:
         languageSelect->addItem(QString());
         languageSelect->addItem(QString());
         languageSelect->addItem(QString());
+        languageSelect->addItem(QString());
         languageSelect->setObjectName(QStringLiteral("languageSelect"));
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy.setHorizontalStretch(0);
@@ -104,12 +104,12 @@ public:
 
         horizontalLayout_3->addWidget(languageSelect);
 
-        loadCompilerButton = new QPushButton(CodeEditor);
-        loadCompilerButton->setObjectName(QStringLiteral("loadCompilerButton"));
-        loadCompilerButton->setMinimumSize(QSize(80, 30));
-        loadCompilerButton->setMaximumSize(QSize(120, 16777215));
-        loadCompilerButton->setFont(font1);
-        loadCompilerButton->setStyleSheet(QLatin1String("QPushButton {\n"
+        loaderButton = new QPushButton(CodeEditor);
+        loaderButton->setObjectName(QStringLiteral("loaderButton"));
+        loaderButton->setMinimumSize(QSize(80, 30));
+        loaderButton->setMaximumSize(QSize(120, 16777215));
+        loaderButton->setFont(font1);
+        loaderButton->setStyleSheet(QLatin1String("QPushButton {\n"
 "   background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #797979, stop:0.48 #696969, stop:0.52 #5e5e5e, stop:1 #4f4f4f);\n"
 "   border-color: #545454;\n"
 "   border-width: 1px;\n"
@@ -121,7 +121,7 @@ public:
 "   background: qradialgradient(cx:0.5, cy:0.5, radius:1, fx:0.5, fy:0.5, stop:0 #dddddd, stop:1 #777777);\n"
 "}"));
 
-        horizontalLayout_3->addWidget(loadCompilerButton);
+        horizontalLayout_3->addWidget(loaderButton);
 
         flagLine = new QLineEdit(CodeEditor);
         flagLine->setObjectName(QStringLiteral("flagLine"));
@@ -139,24 +139,6 @@ public:
 "}"));
 
         horizontalLayout_3->addWidget(flagLine);
-
-        compileButton = new QPushButton(CodeEditor);
-        compileButton->setObjectName(QStringLiteral("compileButton"));
-        compileButton->setMinimumSize(QSize(100, 30));
-        compileButton->setFont(font1);
-        compileButton->setStyleSheet(QLatin1String("QPushButton {\n"
-"   background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #797979, stop:0.48 #696969, stop:0.52 #5e5e5e, stop:1 #4f4f4f);\n"
-"   border-color: #545454;\n"
-"   border-width: 1px;\n"
-"   border-radius: 5px;\n"
-"   border-style: solid;\n"
-"   color: white;\n"
-"                     }\n"
-"QPushButton:pressed {\n"
-"   background: qradialgradient(cx:0.5, cy:0.5, radius:1, fx:0.5, fy:0.5, stop:0 #dddddd, stop:1 #777777);\n"
-"}"));
-
-        horizontalLayout_3->addWidget(compileButton);
 
         submitCodeButton = new QPushButton(CodeEditor);
         submitCodeButton->setObjectName(QStringLiteral("submitCodeButton"));
@@ -180,8 +162,7 @@ public:
         horizontalLayout_3->setStretch(0, 4);
         horizontalLayout_3->setStretch(1, 3);
         horizontalLayout_3->setStretch(2, 4);
-        horizontalLayout_3->setStretch(3, 2);
-        horizontalLayout_3->setStretch(4, 3);
+        horizontalLayout_3->setStretch(3, 3);
 
         horizontalLayout->addLayout(horizontalLayout_3);
 
@@ -277,10 +258,10 @@ public:
         languageSelect->setItemText(2, QApplication::translate("CodeEditor", "C++", nullptr));
         languageSelect->setItemText(3, QApplication::translate("CodeEditor", "C#", nullptr));
         languageSelect->setItemText(4, QApplication::translate("CodeEditor", "Java", nullptr));
+        languageSelect->setItemText(5, QApplication::translate("CodeEditor", "Python", nullptr));
 
-        loadCompilerButton->setText(QApplication::translate("CodeEditor", "Load compiler", nullptr));
+        loaderButton->setText(QApplication::translate("CodeEditor", "Load", nullptr));
         flagLine->setPlaceholderText(QApplication::translate("CodeEditor", "Insert flags", nullptr));
-        compileButton->setText(QApplication::translate("CodeEditor", "Load", nullptr));
         submitCodeButton->setText(QApplication::translate("CodeEditor", "Open code file", nullptr));
         label->setText(QApplication::translate("CodeEditor", "Editor", nullptr));
         label_2->setText(QApplication::translate("CodeEditor", "Compiler output", nullptr));

@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[35];
-    char stringdata0[571];
+    QByteArrayData data[32];
+    char stringdata0[546];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -38,44 +38,39 @@ QT_MOC_LITERAL(3, 27, 20), // "hintFetchingFinished"
 QT_MOC_LITERAL(4, 48, 21), // "inputFetchingFinished"
 QT_MOC_LITERAL(5, 70, 16), // "testcaseReceived"
 QT_MOC_LITERAL(6, 87, 14), // "changeTestcase"
-QT_MOC_LITERAL(7, 102, 12), // "procFinished"
-QT_MOC_LITERAL(8, 115, 20), // "QProcess::ExitStatus"
-QT_MOC_LITERAL(9, 136, 10), // "setProgram"
-QT_MOC_LITERAL(10, 147, 5), // "pName"
-QT_MOC_LITERAL(11, 153, 4), // "lang"
-QT_MOC_LITERAL(12, 158, 21), // "on_searchProb_clicked"
-QT_MOC_LITERAL(13, 180, 18), // "on_checkIn_clicked"
-QT_MOC_LITERAL(14, 199, 19), // "on_checkAll_clicked"
-QT_MOC_LITERAL(15, 219, 8), // "RIGStart"
-QT_MOC_LITERAL(16, 228, 17), // "on_filter_clicked"
-QT_MOC_LITERAL(17, 246, 21), // "on_submitCode_clicked"
-QT_MOC_LITERAL(18, 268, 12), // "procTimedOut"
-QT_MOC_LITERAL(19, 281, 30), // "on_timeLimitIn_editingFinished"
-QT_MOC_LITERAL(20, 312, 19), // "chainResultReceived"
-QT_MOC_LITERAL(21, 332, 7), // "success"
-QT_MOC_LITERAL(22, 340, 19), // "terminateChainCheck"
-QT_MOC_LITERAL(23, 360, 34), // "on_judgeSelect_currentIndexCh..."
-QT_MOC_LITERAL(24, 395, 5), // "index"
-QT_MOC_LITERAL(25, 401, 19), // "on_checkRIG_clicked"
-QT_MOC_LITERAL(26, 421, 16), // "RIGInputReceived"
-QT_MOC_LITERAL(27, 438, 21), // "on_hintButton_clicked"
-QT_MOC_LITERAL(28, 460, 7), // "reqHint"
-QT_MOC_LITERAL(29, 468, 18), // "comparisonFinished"
-QT_MOC_LITERAL(30, 487, 16), // "probNameReceived"
-QT_MOC_LITERAL(31, 504, 8), // "probName"
-QT_MOC_LITERAL(32, 513, 26), // "multiOutputProblemDetected"
-QT_MOC_LITERAL(33, 540, 26), // "problemDescriptionReceived"
-QT_MOC_LITERAL(34, 567, 3) // "url"
+QT_MOC_LITERAL(7, 102, 21), // "on_searchProb_clicked"
+QT_MOC_LITERAL(8, 124, 18), // "on_checkIn_clicked"
+QT_MOC_LITERAL(9, 143, 19), // "on_checkAll_clicked"
+QT_MOC_LITERAL(10, 163, 8), // "RIGStart"
+QT_MOC_LITERAL(11, 172, 17), // "on_filter_clicked"
+QT_MOC_LITERAL(12, 190, 21), // "on_submitCode_clicked"
+QT_MOC_LITERAL(13, 212, 30), // "on_timeLimitIn_editingFinished"
+QT_MOC_LITERAL(14, 243, 19), // "chainResultReceived"
+QT_MOC_LITERAL(15, 263, 7), // "success"
+QT_MOC_LITERAL(16, 271, 19), // "terminateChainCheck"
+QT_MOC_LITERAL(17, 291, 34), // "on_judgeSelect_currentIndexCh..."
+QT_MOC_LITERAL(18, 326, 5), // "index"
+QT_MOC_LITERAL(19, 332, 19), // "on_checkRIG_clicked"
+QT_MOC_LITERAL(20, 352, 16), // "RIGInputReceived"
+QT_MOC_LITERAL(21, 369, 21), // "on_hintButton_clicked"
+QT_MOC_LITERAL(22, 391, 7), // "reqHint"
+QT_MOC_LITERAL(23, 399, 18), // "comparisonFinished"
+QT_MOC_LITERAL(24, 418, 16), // "probNameReceived"
+QT_MOC_LITERAL(25, 435, 8), // "probName"
+QT_MOC_LITERAL(26, 444, 26), // "multiOutputProblemDetected"
+QT_MOC_LITERAL(27, 471, 26), // "problemDescriptionReceived"
+QT_MOC_LITERAL(28, 498, 3), // "url"
+QT_MOC_LITERAL(29, 502, 21), // "loadingFailedReceived"
+QT_MOC_LITERAL(30, 524, 14), // "outputReceived"
+QT_MOC_LITERAL(31, 539, 6) // "output"
 
     },
     "MainWindow\0inputsReceived\0\0"
     "hintFetchingFinished\0inputFetchingFinished\0"
     "testcaseReceived\0changeTestcase\0"
-    "procFinished\0QProcess::ExitStatus\0"
-    "setProgram\0pName\0lang\0on_searchProb_clicked\0"
-    "on_checkIn_clicked\0on_checkAll_clicked\0"
-    "RIGStart\0on_filter_clicked\0"
-    "on_submitCode_clicked\0procTimedOut\0"
+    "on_searchProb_clicked\0on_checkIn_clicked\0"
+    "on_checkAll_clicked\0RIGStart\0"
+    "on_filter_clicked\0on_submitCode_clicked\0"
     "on_timeLimitIn_editingFinished\0"
     "chainResultReceived\0success\0"
     "terminateChainCheck\0"
@@ -84,7 +79,9 @@ QT_MOC_LITERAL(34, 567, 3) // "url"
     "on_hintButton_clicked\0reqHint\0"
     "comparisonFinished\0probNameReceived\0"
     "probName\0multiOutputProblemDetected\0"
-    "problemDescriptionReceived\0url"
+    "problemDescriptionReceived\0url\0"
+    "loadingFailedReceived\0outputReceived\0"
+    "output"
 };
 #undef QT_MOC_LITERAL
 
@@ -94,7 +91,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      26,   14, // methods
+      25,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -102,32 +99,31 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    1,  144,    2, 0x08 /* Private */,
-       3,    0,  147,    2, 0x08 /* Private */,
-       4,    0,  148,    2, 0x08 /* Private */,
-       5,    1,  149,    2, 0x08 /* Private */,
-       6,    1,  152,    2, 0x08 /* Private */,
-       7,    2,  155,    2, 0x08 /* Private */,
-       9,    2,  160,    2, 0x08 /* Private */,
-      12,    0,  165,    2, 0x08 /* Private */,
-      13,    0,  166,    2, 0x08 /* Private */,
-      14,    0,  167,    2, 0x08 /* Private */,
-      15,    0,  168,    2, 0x08 /* Private */,
-      16,    0,  169,    2, 0x08 /* Private */,
-      17,    0,  170,    2, 0x08 /* Private */,
-      18,    0,  171,    2, 0x08 /* Private */,
-      19,    0,  172,    2, 0x08 /* Private */,
-      20,    1,  173,    2, 0x08 /* Private */,
-      22,    0,  176,    2, 0x08 /* Private */,
-      23,    1,  177,    2, 0x08 /* Private */,
-      25,    0,  180,    2, 0x08 /* Private */,
-      26,    1,  181,    2, 0x08 /* Private */,
-      27,    0,  184,    2, 0x08 /* Private */,
-      28,    1,  185,    2, 0x08 /* Private */,
-      29,    0,  188,    2, 0x08 /* Private */,
-      30,    1,  189,    2, 0x08 /* Private */,
-      32,    0,  192,    2, 0x08 /* Private */,
-      33,    1,  193,    2, 0x08 /* Private */,
+       1,    1,  139,    2, 0x08 /* Private */,
+       3,    0,  142,    2, 0x08 /* Private */,
+       4,    0,  143,    2, 0x08 /* Private */,
+       5,    1,  144,    2, 0x08 /* Private */,
+       6,    1,  147,    2, 0x08 /* Private */,
+       7,    0,  150,    2, 0x08 /* Private */,
+       8,    0,  151,    2, 0x08 /* Private */,
+       9,    0,  152,    2, 0x08 /* Private */,
+      10,    0,  153,    2, 0x08 /* Private */,
+      11,    0,  154,    2, 0x08 /* Private */,
+      12,    0,  155,    2, 0x08 /* Private */,
+      13,    0,  156,    2, 0x08 /* Private */,
+      14,    1,  157,    2, 0x08 /* Private */,
+      16,    0,  160,    2, 0x08 /* Private */,
+      17,    1,  161,    2, 0x08 /* Private */,
+      19,    0,  164,    2, 0x08 /* Private */,
+      20,    1,  165,    2, 0x08 /* Private */,
+      21,    0,  168,    2, 0x08 /* Private */,
+      22,    1,  169,    2, 0x08 /* Private */,
+      23,    0,  172,    2, 0x08 /* Private */,
+      24,    1,  173,    2, 0x08 /* Private */,
+      26,    0,  176,    2, 0x08 /* Private */,
+      27,    1,  177,    2, 0x08 /* Private */,
+      29,    0,  180,    2, 0x08 /* Private */,
+      30,    1,  181,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void, QMetaType::QByteArray,    2,
@@ -135,8 +131,6 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void, QMetaType::QByteArray,    2,
     QMetaType::Void, QMetaType::QString,    2,
-    QMetaType::Void, QMetaType::Int, 0x80000000 | 8,    2,    2,
-    QMetaType::Void, QMetaType::QString, QMetaType::QString,   10,   11,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -144,18 +138,19 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void, QMetaType::Bool,   15,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Bool,   21,
-    QMetaType::Void,
-    QMetaType::Void, QMetaType::Int,   24,
+    QMetaType::Void, QMetaType::Int,   18,
     QMetaType::Void,
     QMetaType::Void, QMetaType::QByteArray,    2,
     QMetaType::Void,
     QMetaType::Void, QMetaType::QString,    2,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString,   31,
+    QMetaType::Void, QMetaType::QString,   25,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString,   34,
+    QMetaType::Void, QMetaType::QString,   28,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::QByteArray,   31,
 
        0        // eod
 };
@@ -171,27 +166,26 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 2: _t->inputFetchingFinished(); break;
         case 3: _t->testcaseReceived((*reinterpret_cast< const QByteArray(*)>(_a[1]))); break;
         case 4: _t->changeTestcase((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 5: _t->procFinished((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< QProcess::ExitStatus(*)>(_a[2]))); break;
-        case 6: _t->setProgram((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
-        case 7: _t->on_searchProb_clicked(); break;
-        case 8: _t->on_checkIn_clicked(); break;
-        case 9: _t->on_checkAll_clicked(); break;
-        case 10: _t->RIGStart(); break;
-        case 11: _t->on_filter_clicked(); break;
-        case 12: _t->on_submitCode_clicked(); break;
-        case 13: _t->procTimedOut(); break;
-        case 14: _t->on_timeLimitIn_editingFinished(); break;
-        case 15: _t->chainResultReceived((*reinterpret_cast< const bool(*)>(_a[1]))); break;
-        case 16: _t->terminateChainCheck(); break;
-        case 17: _t->on_judgeSelect_currentIndexChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 18: _t->on_checkRIG_clicked(); break;
-        case 19: _t->RIGInputReceived((*reinterpret_cast< const QByteArray(*)>(_a[1]))); break;
-        case 20: _t->on_hintButton_clicked(); break;
-        case 21: _t->reqHint((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 22: _t->comparisonFinished(); break;
-        case 23: _t->probNameReceived((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 24: _t->multiOutputProblemDetected(); break;
-        case 25: _t->problemDescriptionReceived((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 5: _t->on_searchProb_clicked(); break;
+        case 6: _t->on_checkIn_clicked(); break;
+        case 7: _t->on_checkAll_clicked(); break;
+        case 8: _t->RIGStart(); break;
+        case 9: _t->on_filter_clicked(); break;
+        case 10: _t->on_submitCode_clicked(); break;
+        case 11: _t->on_timeLimitIn_editingFinished(); break;
+        case 12: _t->chainResultReceived((*reinterpret_cast< const bool(*)>(_a[1]))); break;
+        case 13: _t->terminateChainCheck(); break;
+        case 14: _t->on_judgeSelect_currentIndexChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 15: _t->on_checkRIG_clicked(); break;
+        case 16: _t->RIGInputReceived((*reinterpret_cast< const QByteArray(*)>(_a[1]))); break;
+        case 17: _t->on_hintButton_clicked(); break;
+        case 18: _t->reqHint((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 19: _t->comparisonFinished(); break;
+        case 20: _t->probNameReceived((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 21: _t->multiOutputProblemDetected(); break;
+        case 22: _t->problemDescriptionReceived((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 23: _t->loadingFailedReceived(); break;
+        case 24: _t->outputReceived((*reinterpret_cast< const QByteArray(*)>(_a[1]))); break;
         default: ;
         }
     }
@@ -222,13 +216,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 26)
+        if (_id < 25)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 26;
+        _id -= 25;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 26)
+        if (_id < 25)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 26;
+        _id -= 25;
     }
     return _id;
 }

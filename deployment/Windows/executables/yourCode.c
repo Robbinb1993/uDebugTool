@@ -1,81 +1,120 @@
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
-#include <stdlib.h>
-char morse[1000][100], cpy[1000], str[1000][100], mes[1000][200], str_mor[1000][200];
-void sct(char* a, char* b){
-    strcat(a, b);
+
+typedef long long az_int64_t;
+typedef unsigned long long az_uint64_t;
+#define I64(x) x ## ll
+#define F64 "ll"
+
+#define MAXN (100*1024)
+
+int zlog2( az_uint64_t n )
+{
+  unsigned int v, num;
+  int r = 0;
+
+  if( (v = (unsigned int) (n >> 32)) != 0 )
+    r += 32, num = v;
+  else
+    num = (unsigned int) n;
+  if( (v = num >> 16) != 0 ) r += 16, num = v;
+  if( (v = num >> 8) != 0 ) r += 8, num = v;
+  if( (v = num >> 4) != 0 ) r += 4, num = v;
+  if( (v = num >> 2) != 0 ) r += 2, num = v;
+  if( (v = num >> 1) != 0 ) r++;
+
+  return r;
 }
 
-int gaps(char* a, char* b, int c){
-    int i;
-    for (i = 0; i < c; i++) {
-        if (*(a + i) != *(b + i)) {
-            return i;
-        }
-    }
-    return i;
+struct item
+{
+  struct item *next;
+  struct item *hnext;
+  az_uint64_t num;
+};
+
+struct item storage[MAXN];
+int cur;
+struct item *hash[MAXN/10];
+
+int has( struct item *item )
+{
+  int h = (int) (item->num % 10211);
+  struct item *cur;
+  for( cur = hash[h]; cur != NULL; cur = cur->hnext)
+    if( item->num == cur->num ) return 1;
+  item->hnext = hash[h];
+  hash[h] = item;
+  return 0;
 }
 
+struct item *basket[64];
 
-int main() {
-    int i, j, k;
-    memset(morse, '\0', sizeof(morse));
-    memset(cpy, '\0', sizeof(cpy));
-    memset(str, '\0', sizeof(str));
-    memset(mes, '\0', sizeof(mes));
-    scanf("%[ \n\0]", cpy);
-    for (i = 0; ; i++){
-        scanf("%c", &morse[i][0]);
-        if (morse[i][0] == '*') break;
-        scanf("%[^-.]%s", cpy, cpy);
-        getchar();
-        sct(morse[i], cpy);
-        scanf("%[ \n\0]", cpy);
+void addItem( struct item *item )
+{
+  if( item->num != 0 )
+  {
+    int n = zlog2( item->num );
+    item->next = basket[n];
+    basket[n] = item;
+  }
+}
+
+az_int64_t bt( int n )
+{
+  struct item *item;
+  az_uint64_t num;
+
+  if( n == 0 ) return (basket[0] == NULL) ? 0 : 1;
+  if( basket[n] == NULL ) return bt( n-1 );
+
+  num = basket[n]->num;
+  item = basket[n]->next;
+  while( item != NULL )
+  {
+    struct item *next = item->next;
+    item->num ^= num;
+    addItem( item );
+    item = next;
+  }
+
+  return 2 * bt( n-1 ) + 1;
+}
+
+int main( void )
+{
+  int t;
+  scanf( "%d", &t);
+  while( t-- > 0 )
+  {
+    int i, n;
+    az_int64_t ans;
+    cur = 0;
+    memset( hash, 0, sizeof(hash));
+    scanf( "%d", &n);
+    for( i = 0; i < 64; ++i) basket[i] = NULL;
+    for( i = 0; i < n; ++i)
+    {
+      struct item *item = &storage[cur];
+      az_uint64_t num = 0;
+      char line[128], *s;
+      scanf( "%s", line);
+      for( s = line; *s != '\0'; ++s)
+      {
+        int c = *s;
+        if( c >= 'a' && c <= 'z' )
+          c -= 'a';
+        else if( c >= 'A' && c <= 'Z' )
+          c -= 'A' - 26;
+        else
+          c -= '0' - 52;
+        num ^= I64(1u) << c;
+      }
+      if( (item->num = num) == 0 ) continue;
+      if( !has( item ) ) addItem( item ), cur++;
     }
-    scanf("%[ \n\0]", cpy);
-    for (i = 0; ; i++){
-        scanf("%s", str[i]);
-        if (str[i][0] == '*') break;
-    }
-    scanf("%[ \n\0]", cpy);
-    for (i = 0; ; i++){
-        scanf("%[^ \n\0]", mes[i]);
-        if (mes[i][0] == '*') break;
-        scanf("%[^-.*]", mes[i + 1]);
-    }
-    for (i = 0; str[i][0] != '*'; i++) {
-        for (j = 0; j < strlen(str[i]); j++) {
-            for (k = 0; morse[k][0] != '*'; k++) {
-                if (str[i][j] == morse[k][0]) {
-                    sct(str_mor[i], morse[k] + 1);
-                    break;
-                }
-            }
-        }
-    }
-            
-    for (i = 0; mes[i][0] != '*'; i++) {
-        int gap = 10000, g, ans = 0, q = 0;
-        for (j = 0; str[j][0] != '*'; j++) {
-            if (strlen(mes[i]) < strlen(str_mor[j]))
-                g = strlen(str_mor[j]) - gaps(mes[i], str_mor[j], strlen(str_mor[j]));
-            else g = strlen(mes[i]) - gaps(str_mor[j], mes[i], strlen(mes[i]));
-            if (g < gap) {
-                q = 0;
-                ans = j;
-                gap = g;
-            }
-            else if (g == gap)
-                q = 1;
-           
-        }
-        printf("%s", str[ans]);
-        if (q && gap == 0) printf("!");
-        else if (gap) printf("?");
-        printf("\n");
-    }
-    
-    
-    return 0;
+    if( (ans = bt( 63 ) - cur) < 0 ) ans = 0;
+    printf( "%" F64 "d\n", ans);
+  }
+  return 0;
 }

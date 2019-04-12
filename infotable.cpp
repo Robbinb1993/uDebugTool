@@ -1,6 +1,6 @@
 #include "infotable.h"
 
-InfoTable::InfoTable(QWidget *parent = 0) : QTableWidget(parent) {
+InfoTable::InfoTable(QWidget *parent) : QTableWidget(parent) {
     connect(this, SIGNAL(clicked(QModelIndex)), this, SLOT(onTableRowClicked(const QModelIndex&)));
     setColumnCount(3);
     setHorizontalHeaderItem(0, new QTableWidgetItem(QString("User")));

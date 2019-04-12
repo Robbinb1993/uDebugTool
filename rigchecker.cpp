@@ -1,15 +1,13 @@
 #include "rigchecker.h"
 #include "ui_rigchecker.h"
 
-RIGChecker::RIGChecker(const ExecuteInfo *e, QWidget *parent) :
+RIGChecker::RIGChecker(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::RIGChecker),
-    executer(e) {
+    ui(new Ui::RIGChecker) {
     ui->setupUi(this);
     setWindowTitle("RIG Checker");
     this->setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     codeEditor = new CodeEditor("rig", "Random Input Generator Loader", parent);
-    connect(codeEditor, SIGNAL(programReady(const QString&, const QString&)), this, SLOT(setRIG(const QString&, const QString&)));
     iterations = 1;
     currLang = programPath = "";
     ui->loadRIG->setDefault(false);
@@ -79,15 +77,7 @@ void RIGChecker::fetchNextInput() {
     proc->terminate();
     proc->close();
     //start process depending on language (java, python, just executable)
-    if (executer->getExecuteInfo(currLang).length() == 0)
-        proc->start(programPath);
-    else {
-        QStringList list;
-        if (currLang == "Java")
-            list << "-cp", list << QDir::currentPath() + QString("/rig:");
-        list << programPath;
-        proc->start(executer->getExecuteInfo(currLang), list);
-    }//else
+    proc->start(programPath);
     proc->closeWriteChannel();
 }//fetchNextInput
 

@@ -1,55 +1,43 @@
 #include <bits/stdc++.h>
 using namespace std;
-typedef pair<int, int> ii;
-
-vector<vector<int> > edges;
-bool seen[30];
-map<ii, int> eSeen;
-vector<int> added;
-vector<ii> addedEdges;
+ 
+set<string> seen;
+vector<int> indices;
+vector<char> V;
+ 
+unsigned long long llrand() {
+    unsigned long long r = 0;
+    for (int i = 0; i < 5; ++i) {
+        r = (r << 15) | (rand() & 0x7FFF);
+    }
+    return r & 0xFFFFFFFFFFFFFFFFULL;
+}
 
 int main() {
-
-   srand(time(0));
-   int T = 100;
-   printf("%d\n", T);
-   while (T--) {
-      memset(seen, 0, sizeof(seen));
-      added.clear();
-      eSeen.clear();
-      addedEdges.clear();
-      int N = rand() % 26 + 1;
-      edges.assign(N, vector<int>());
-      for (int i = 0; i < N; i++) {
-         int now;
-         do {
-            now = rand() % 26;
-         } while (seen[now]);
-         seen[now] = 1;
-         if (rand() % 6 < 5) {
-            if (i) {
-               int nb = added[rand() % (int)added.size()];
-               if (eSeen.find(ii(now, nb)) == eSeen.end()) {
-                  eSeen[ii(now, nb)] = eSeen[ii(nb, now)] = 1;
-                  addedEdges.push_back(ii(now, nb));
-               }//if
-            }//if
-         }//if
-         added.push_back(now);
-      }//for
-      random_shuffle(addedEdges.begin(), addedEdges.end());
-      for (auto& v : addedEdges)
-         printf("(%c,%c)\n", char(v.first + 'A'), char(v.second + 'A'));
-      int tot = rand() % 50 + 1;
-      for (int i = 0; i < tot; i++)
-         printf("*");
-      puts("");
-      for (int i = 0; i < (int)added.size(); i++) {
-         if (i)
-            printf(",");
-         printf("%c", char(added[i] + 'A'));
-      }//for
-      puts("");
-   }//while
-   return 0;
+	srand(time(0));
+	int T = 1;
+	string S;
+	printf("%d\n", T);
+	for (int i = 0; i < 62; i++)
+		indices.push_back(i);
+	for (char c = 'a'; c <= 'z'; c++)
+		V.push_back(c);
+	for (char c = 'A'; c <= 'Z'; c++)
+		V.push_back(c);
+	for (char c = '0'; c <= '9'; c++)
+		V.push_back(c);
+	while (T--) {
+		int N = llrand() % 100 + 1;
+		printf("%d\n", N);
+		while (N--) {			
+			S = "";
+			int tot = llrand() % 10 + 1;
+			random_shuffle(indices.begin(), indices.end());
+			for (int i = 0; i < tot; i++)
+				S.push_back(V[indices[i]]);			
+			seen.insert(S);
+			printf("%s\n", S.c_str());
+		}//while
+	}//while
+	return 0;
 }//main

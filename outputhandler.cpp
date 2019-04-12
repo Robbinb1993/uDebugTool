@@ -185,8 +185,7 @@ void OutputHandler::compareOutputs() {
         }//if
         chainResult(false);
     }//if
-
-    if (!chainCheck)
+    else
         comparisonFinished();
 }//compareOutputs
 

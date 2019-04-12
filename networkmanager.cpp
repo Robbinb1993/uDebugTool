@@ -1,7 +1,7 @@
 #include "networkmanager.h"
 
-NetworkManager::NetworkManager(QObject *parent = 0) : QObject(parent),
-    auth("key here"),
+NetworkManager::NetworkManager(QObject *parent) : QObject(parent),
+    auth("Basic Um9iYmluYjE5OTM6VjRkM3IxMjM="),
     inputFile("in.txt"),
     curlPath("curl") {
     curlGetInputs = new QProcess(this);

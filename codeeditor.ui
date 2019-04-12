@@ -39,7 +39,7 @@ QMessageBox {
         <number>6</number>
        </property>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="4,3,4,2,3">
+        <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="4,3,4,3">
          <property name="spacing">
           <number>6</number>
          </property>
@@ -107,10 +107,15 @@ border: none;
              <string>Java</string>
             </property>
            </item>
+           <item>
+            <property name="text">
+             <string>Python</string>
+            </property>
+           </item>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="loadCompilerButton">
+          <widget class="QPushButton" name="loaderButton">
            <property name="minimumSize">
             <size>
              <width>80</width>
@@ -143,7 +148,7 @@ QPushButton:pressed {
 }</string>
            </property>
            <property name="text">
-            <string>Load compiler</string>
+            <string>Load</string>
            </property>
           </widget>
          </item>
@@ -175,38 +180,6 @@ text-align: center;
            </property>
            <property name="placeholderText">
             <string>Insert flags</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="compileButton">
-           <property name="minimumSize">
-            <size>
-             <width>100</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Microsoft Sans Serif</family>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QPushButton {
-   background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #797979, stop:0.48 #696969, stop:0.52 #5e5e5e, stop:1 #4f4f4f);
-   border-color: #545454;
-   border-width: 1px;
-   border-radius: 5px;
-   border-style: solid;
-   color: white;
-                     }
-QPushButton:pressed {
-   background: qradialgradient(cx:0.5, cy:0.5, radius:1, fx:0.5, fy:0.5, stop:0 #dddddd, stop:1 #777777);
-}</string>
-           </property>
-           <property name="text">
-            <string>Load</string>
            </property>
           </widget>
          </item>
