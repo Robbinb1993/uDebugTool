@@ -12,28 +12,23 @@
 #include <QFontDatabase>
 #include <QDir>
 
-enum TableTypes {InputTable, HintTable};
-
 class InfoTable : public QTableWidget {
     Q_OBJECT
 
 public:
-    InfoTable(QWidget*);
+    InfoTable(QWidget*, const QString&);
     void clear();
     void addEntries(const QByteArray&);
     void addInfo(const QByteArray&);
     bool isReady();
-    void setTableType(const TableTypes type);
     QString requestInfo(const int idx);
     bool resetting;
 private:
     QVector<QString> info;
     QVector<QString> infoID;
-    TableTypes tableType;
+    QString infoType;
     bool finishedFetching;
     int processedUntil, pendingEntry;
-public slots:
-
 private slots:
     void onTableRowClicked(const QModelIndex&);
 signals:

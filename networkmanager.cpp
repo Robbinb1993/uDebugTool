@@ -44,8 +44,8 @@ void NetworkManager::scrapingDone(QNetworkReply* reply) {
     size_t pos = html.find(needle);
     if (pos != std::string::npos) {
         QString probName = "";
-        pos += (int)needle.size();
-        while (html[pos] != '<' && pos < (size_t)html.length())
+        pos += int(needle.size());
+        while (html[pos] != '<' && pos < size_t(html.length()))
             probName += html[pos++];
         probNameReady(probName);
     }//if

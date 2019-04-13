@@ -15,6 +15,7 @@ SourceCode::SourceCode(QObject *parent) : QObject(parent) {
 }
 
 void SourceCode::executeProcFinished(int, QProcess::ExitStatus status) {
+    qDebug() << timeMeasure.elapsed();
     if (status == QProcess::ExitStatus::NormalExit)
         outputArrived(executeProc->readAllStandardOutput(), timeMeasure.elapsed());
     else
@@ -87,7 +88,7 @@ CompiledSourceCode::CompiledSourceCode(QObject *parent) : SourceCode(parent) {
     connect(compileProc, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(compileProcFinished(int, QProcess::ExitStatus)));
 }
 
-void CompiledSourceCode::compileProcFinished(int exit, QProcess::ExitStatus e) {
+void CompiledSourceCode::compileProcFinished(int exit, QProcess::ExitStatus) {
     loaderOutputArrived(exit, compileProc->readAllStandardError(), compileProc->readAllStandardOutput());
     if (exit == 0) {
         compiled = true;        

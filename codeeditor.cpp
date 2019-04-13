@@ -77,6 +77,7 @@ void CodeEditor::execute(const QString& input, const int timeOutValue) {
 void CodeEditor::loaderOutputReceived(int ret, const QByteArray& error, const QByteArray& output) {
     if (ret != 0) {
         ui->loaderOutput->setPlainText("Compiler error:\n" + error + "\n" + output);
+        loaderErrorArrived();
         raise();
         show();
     }//if

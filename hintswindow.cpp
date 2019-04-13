@@ -2,14 +2,13 @@
 #include "ui_hintswindow.h"
 
 HintsWindow::HintsWindow(QWidget *parent) :
-    QDialog(NULL),
+    QDialog(nullptr),
     ui(new Ui::HintsWindow) {
     ui->setupUi(this);
     setWindowTitle("Hints");
     this->setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     ui->hintText->viewport()->setCursor(Qt::ArrowCursor);
     ui->hintText->setOpenExternalLinks(true);
-    ui->hintTable->setTableType(TableTypes::HintTable);
     connect(ui->hintTable, SIGNAL(sendInfo(const QString&)), this, SLOT(changeHint(const QString&)));
     connect(ui->hintTable, SIGNAL(getInfo(const QString&)), parent, SLOT(reqHint(const QString&)));
     connect(ui->hintTable, SIGNAL(ready()), parent, SLOT(hintFetchingFinished()));

@@ -13,7 +13,7 @@ class InputChainChecker : public QDialog
     Q_OBJECT
 
 public:
-    explicit InputChainChecker(QWidget *parent = 0);   
+    explicit InputChainChecker(QWidget *parent = nullptr);
     ~InputChainChecker();
     void mismatchFound(const int idx);
     void progress(const int idx, const int tot);

@@ -56,7 +56,7 @@ SyntaxHighlighter::SyntaxHighlighter(QTextDocument *parent)
            "\\+=" << "-=" << "\\*=" << "/=" << "%=" <<
            // Bitwise
            "\\^" << "\\|" << "&" << "~" << ">>" << "<<" <<
-           //
+           // Separators
            "\\," << "\\." << "\\:" << "\\;";
 
     braces = QStringList() << "\\{" << "\\}" << "\\(" << "\\)" << "\\[" << "\\]";
@@ -78,7 +78,7 @@ SyntaxHighlighter::SyntaxHighlighter(QTextDocument *parent)
     commentEndExpression = QRegularExpression("\\*/");
 
     initializeRules();
-} /*test*/
+}
 
 void SyntaxHighlighter::initializeRules()
 {

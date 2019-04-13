@@ -1,6 +1,6 @@
 #include "infotable.h"
 
-InfoTable::InfoTable(QWidget *parent) : QTableWidget(parent) {
+InfoTable::InfoTable(QWidget *parent, const QString& info) : QTableWidget(parent) {
     connect(this, SIGNAL(clicked(QModelIndex)), this, SLOT(onTableRowClicked(const QModelIndex&)));
     setColumnCount(3);
     setHorizontalHeaderItem(0, new QTableWidgetItem(QString("User")));
@@ -19,11 +19,9 @@ InfoTable::InfoTable(QWidget *parent) : QTableWidget(parent) {
     setSelectionBehavior(QAbstractItemView::SelectRows);
     horizontalHeader()->setHighlightSections(false);
     verticalHeader()->setHighlightSections(false);
-}//constructor
 
-void InfoTable::setTableType(const TableTypes type) {
-    tableType = type;
-}//setTableType
+    infoType = info;
+}//constructor
 
 void InfoTable::clear() {
     processedUntil = 0;
@@ -46,17 +44,6 @@ void InfoTable::addEntries(const QByteArray& entries) {
     clear();
     QJsonDocument jsonResponse = QJsonDocument::fromJson(entries);
     QJsonObject jsonObj = jsonResponse.object();
-    QJsonObject::iterator it;
-    if ((it = jsonObj.find("error")) != jsonObj.end()) {
-        ready();
-        if (tableType == TableTypes::InputTable) {
-            QString message = "The problem has not been found: ";
-            message += (*it).toObject()["message"].toString();
-            message += ".";
-            QMessageBox::information(this, tr("Message"), tr(message.toUtf8()));
-        }//if
-        return;
-    }//if
     QJsonArray jsonArr = jsonResponse.array();
     foreach (const QJsonValue& v, jsonArr) {
         insertRow(rowCount());
@@ -68,11 +55,7 @@ void InfoTable::addEntries(const QByteArray& entries) {
         setItem(rowCount() - 1, 1, new QTableWidgetItem(jsonObj["Date"].toString()));
         setItem(rowCount() - 1, 2, new QTableWidgetItem(votes));
 
-        if (tableType == TableTypes::InputTable)
-            info.push_back("Test case will be fetched.");
-        else
-            info.push_back("Hint will be fetched.");
-
+        info.push_back(infoType + " will be fetched.");
         infoID.push_back(jsonObj["id"].toString());
     }//foreach
 
@@ -80,12 +63,6 @@ void InfoTable::addEntries(const QByteArray& entries) {
         getInfo(infoID[processedUntil]);
     else
         ready();
-
-    if (jsonArr.empty()) {
-        if (tableType == TableTypes::InputTable)
-            QMessageBox::information(this, tr("Message"), tr("No inputs exist for this problem."));
-    }//if
-
 }//addEntries
 
 void InfoTable::addInfo(const QByteArray& response) {

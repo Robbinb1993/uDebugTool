@@ -298,7 +298,7 @@ public:
 
         verticalLayout_3->addItem(verticalSpacer_2);
 
-        inputTable = new InfoTable(centralWidget);
+        inputTable = new InfoTable(centralWidget, "Test case");
         inputTable->setObjectName(QStringLiteral("inputTable"));
         inputTable->setFont(font1);
         inputTable->setStyleSheet(QStringLiteral(""));

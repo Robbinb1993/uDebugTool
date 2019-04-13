@@ -42,6 +42,7 @@ private:
 signals:
     void outputReady(const QByteArray& output, const int time);
     void executionFailed(bool crashed);
+    void loaderErrorArrived();
 };
 
 #endif // CODEEDITOR_H

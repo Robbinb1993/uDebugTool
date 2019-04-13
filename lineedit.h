@@ -4,17 +4,12 @@
 #include <QLineEdit>
 #include <QDebug>
 
-class LineEdit : public QLineEdit
-{
+class LineEdit : public QLineEdit {
     Q_OBJECT
-public:
-    explicit LineEdit(QWidget *parent = nullptr);
-protected:
-    void mousePressEvent(QMouseEvent*);
-
-signals:
-
-public slots:
+    public:
+        explicit LineEdit(QWidget *parent = nullptr);
+    protected:
+        void mousePressEvent(QMouseEvent*);
 };
 
 #endif // LINEEDIT_H

@@ -67,6 +67,7 @@ MainWindow::MainWindow(QWidget *parent) :
     codeEditor = new CodeEditor("executables", "Code Loader", this);
     connect(codeEditor, SIGNAL(outputReady(const QByteArray&, const int)), this, SLOT(userOutputReceived(const QByteArray&, const int)));
     connect(codeEditor, SIGNAL(executionFailed(bool)), this, SLOT(executionFailedReceived(bool)));
+    connect(codeEditor, SIGNAL(loaderErrorArrived()), this, SLOT(loaderErrorReceived()));
 
     outHandler = new OutputHandler(this, ui->acOut, ui->userOut, ui->resultLine);
     connect(outHandler, SIGNAL(chainResult(bool)), this, SLOT(chainResultReceived(bool)));
@@ -75,7 +76,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->userOut->verticalScrollBar(), &QAbstractSlider::valueChanged, ui->acOut->verticalScrollBar(), &QAbstractSlider::setValue);
     connect(ui->acOut->horizontalScrollBar(), &QAbstractSlider::valueChanged, ui->userOut->horizontalScrollBar(), &QAbstractSlider::setValue);
     connect(ui->userOut->horizontalScrollBar(), &QAbstractSlider::valueChanged, ui->acOut->horizontalScrollBar(), &QAbstractSlider::setValue);
-    ui->inputTable->setTableType(TableTypes::InputTable);
+
     connect(ui->inputTable, SIGNAL(sendInfo(const QString&)), this, SLOT(changeTestcase(const QString&)));
     connect(ui->inputTable, SIGNAL(ready()), this, SLOT(inputFetchingFinished()));
 
@@ -114,8 +115,15 @@ void MainWindow::changeTestcase(const QString& testcase) {
     ui->customIn->setPlainText(testcase);
 }
 
-void MainWindow::inputsReceived(const QByteArray& result) {    
-    ui->inputTable->addEntries(result);
+void MainWindow::inputsReceived(const QByteArray& result) {
+    if (result.indexOf("error") != -1) {
+        QString message = "The problem has not been found.";
+        QMessageBox::information(this, tr("Message"), tr(message.toUtf8()));
+        problemReady = true;
+        inputFetchingFinished();
+    }//if
+    else
+        ui->inputTable->addEntries(result);
 }
 
 void MainWindow::inputFetchingFinished() {
@@ -130,6 +138,7 @@ void MainWindow::hintFetchingFinished() {
 
 void MainWindow::probNameReceived(const QString &probName) {
     ui->probNameLabel->setText(probName);
+    problemReady = true;
 }
 
 void MainWindow::multiOutputProblemDetected() {
@@ -158,6 +167,8 @@ void MainWindow::acOutputReceived(const QByteArray& output) {
 }
 
 void MainWindow::on_searchProb_clicked() {
+    problemReady = 0;
+
     if (ui->judgeSelect->currentIndex() == 0) {
         QMessageBox::information(this, tr("Message"), tr("Please select a judge."));
         return;
@@ -169,7 +180,6 @@ void MainWindow::on_searchProb_clicked() {
 
     ui->probNameLabel->clear();
     rigchecker->clear();
-    ui->submitCode->setStyleSheet("QPushButton {background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #797979, stop:0.48 #696969, stop:0.52 #5e5e5e, stop:1 #4f4f4f); border-color: #545454;border-width: 1px;border-radius: 5px;border-style: solid;color: white;}QPushButton:pressed {background: qradialgradient(cx:0.5, cy:0.5, radius:1, fx:0.5, fy:0.5, stop:0 #dddddd, stop:1 #777777);}");
     ui->customIn->clear();
     ui->inputTable->clear();
     outHandler->clear();
@@ -186,28 +196,12 @@ void MainWindow::on_searchProb_clicked() {
     ui->loadLabel->show();
 }
 
-bool MainWindow::readyToCheck() {
-    if (ui->judgeSelect->currentIndex() == 0) {
-        QMessageBox::information(this, tr("Message"), tr("Please select a judge."));
-        return false;
-    }
-    if (ui->problemId->text().length() == 0 || !(ui->problemId->text().toStdString().find_first_not_of("0123456789") == std::string::npos)) {
-        QMessageBox::information(this, tr("Message"), tr("Please enter a problem ID."));
-        return false;
-    }
-    return true;
-}
-
 void MainWindow::checkLoader() {
     if (inputsReady && acOutputReady && userOutputReady && hintsReady)
         ui->loadLabel->hide();
 }
 
-void MainWindow::on_checkIn_clicked() {    
-    if (!readyToCheck())
-        return;    
-    ui->loadLabel->show();    
-    outHandler->disableChainCheck();
+void MainWindow::execute() {
     outHandler->clear();
     acOutputReady = userOutputReady = false;
     QString input = ui->customIn->toPlainText();
@@ -216,8 +210,16 @@ void MainWindow::on_checkIn_clicked() {
     ui->acOut->setPlainText("Accepted output\nis being fetched.");
 }
 
+void MainWindow::on_checkIn_clicked() {    
+    if (!problemReady)
+        return;    
+    ui->loadLabel->show();    
+    outHandler->disableChainCheck();
+    execute();
+}
+
 void MainWindow::on_checkAll_clicked() {    
-    if (!readyToCheck())
+    if (!problemReady)
         return;
     if (!ui->inputTable->isReady()) {
         QMessageBox::information(this, tr("Message"), tr("Please wait until all test cases have been fetched."));
@@ -230,12 +232,11 @@ void MainWindow::on_checkAll_clicked() {
     chainTerminate = false;
     chainIdx = 1;
     executeNextInTable();
-    codeEditor->hide();
     chainChecker->show();
 }
 
 void MainWindow::on_checkRIG_clicked() {
-    if (!readyToCheck())
+    if (!problemReady)
         return;
     if (!rigchecker->isVisible())
         rigchecker->show();
@@ -259,8 +260,10 @@ void MainWindow::RIGStart() {
 }
 
 void MainWindow::executeNextInTable() {
-    if (chainIdx <= ui->inputTable->rowCount())
+    if (chainIdx <= ui->inputTable->rowCount()) {
         ui->customIn->setPlainText(ui->inputTable->requestInfo(chainIdx - 1));
+        execute();
+    }
     else {
        checkLoader();
        outHandler->clear();
@@ -291,7 +294,9 @@ void MainWindow::chainResultReceived(const bool success) {
     }
     else {
         checkLoader();
+        qDebug() << "MISMATCH";
         chainChecker->mismatchFound(chainIdx);
+        terminateChainCheck();
     }
 }
 
@@ -358,6 +363,11 @@ void MainWindow::executionFailedReceived(bool crashed) {
         outHandler->userProgCrashed();
     else
         outHandler->userProgTimedOut();
+    userOutputReady = true;
+    checkLoader();
+}
+
+void MainWindow::loaderErrorReceived() {
     userOutputReady = true;
     checkLoader();
 }

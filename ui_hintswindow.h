@@ -78,7 +78,7 @@ public:
 
         verticalLayout->addWidget(label);
 
-        hintTable = new InfoTable(HintsWindow);
+        hintTable = new InfoTable(HintsWindow, "Hint");
         hintTable->setObjectName(QStringLiteral("hintTable"));
         QFont font1;
         font1.setFamily(QStringLiteral("DejaVu Sans"));

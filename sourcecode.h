@@ -15,7 +15,7 @@ class SourceCode : public QObject {
     public:
         explicit SourceCode(QObject*);
         virtual ~SourceCode() {executeProc->close();}
-        virtual void execute(const QString&, const int timeOutValue) {}
+        virtual void execute(const QString&, const int) {}
         virtual void set(const QString& newCode) {code = newCode;}
         void setPath(const QString& newPath) {workPath = newPath;}
         void setFlags(const QString& newFlags) {flags = newFlags;}

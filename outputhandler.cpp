@@ -63,7 +63,7 @@ void OutputHandler::acOutputReceived(const QByteArray& result) {
 }//acOutputReceived
 
 void OutputHandler::userProgTimedOut() {
-    userOut->setPlainText("user program has timed out.");
+    userOut->setPlainText("User program has timed out.");
     comparisonFinished();
 }//userProcTimedOut
 

@@ -25,7 +25,7 @@ bool InputChainChecker::eventFilter(QObject *, QEvent* e) {
 }//eventFilter
 
 void InputChainChecker::progress(const int idx, const int tot) {
-    ui->progressBar->setValue((tot == 0 ? 100 : (idx / double(tot)) * 100));
+    ui->progressBar->setValue((tot == 0 ? 100 : int(idx / double(tot) * 100)));
     QString txt = "";
     if (idx == tot) {
         txt.append("Output is correct for all inputs.");
