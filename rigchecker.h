@@ -17,30 +17,25 @@ public:
     void fetchNextInput();
     int getIterations();
     void clear();
+    void terminate();
     ~RIGChecker();
-
-protected:
-    bool eventFilter(QObject *, QEvent *);
-
 private slots:
     void on_loadRIG_clicked();
     void on_iterationsLine_editingFinished();
-    void setRIG(const QString& pName, const QString& lang);
+    void setRIG();
     void on_check_clicked();
-    void procFinished(int, QProcess::ExitStatus);
-
+    void executionFailedReceived(bool crashed);
+    void RIGOutputReceived(const QByteArray& output, const int&);
+    void loaderErrorReceived();
 private:
     Ui::RIGChecker *ui;
     CodeEditor* codeEditor;
-    QString programPath, currLang;
-    QProcess* proc;
     int iterations;
-
 signals:
     void RIGCrash();
     void sendInput(const QByteArray& in);
     void RIGCheckStart();
-    void windowClosed();
+    void terminateRIG();
 };
 
 #endif // RIGCHECKER_H

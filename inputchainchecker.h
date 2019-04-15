@@ -17,14 +17,10 @@ public:
     ~InputChainChecker();
     void mismatchFound(const int idx);
     void progress(const int idx, const int tot);
-    void chainTerminated();
-
 protected:
     bool eventFilter(QObject *, QEvent *);
-
 private:
     Ui::InputChainChecker *ui;
-
 signals:
     void windowClosed();
 private slots:

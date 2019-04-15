@@ -22,9 +22,6 @@ public:
     void userProgTimedOut();
     void toggleFilter();
     void setExecutionTime(const int t);
-    void enableChainCheck();
-    void disableChainCheck();
-
 private:
     Editor * const acOut;
     Editor * const userOut;
@@ -32,10 +29,10 @@ private:
     QTextCharFormat green, red, white;
     std::string acTxt, userTxt;
     int executionTime;
-    bool acReady, userReady, cleared, filter, chainCheck;
+    bool acReady, userReady, cleared, filter;
     void compareOutputs();
 signals:
-    void chainResult(const bool success);
+    void outputResult(const bool success);
     void comparisonFinished();
 };
 

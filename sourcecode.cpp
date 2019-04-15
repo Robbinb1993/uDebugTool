@@ -22,6 +22,11 @@ void SourceCode::executeProcFinished(int, QProcess::ExitStatus status) {
         executionFailed(!timedOut);
 }
 
+void SourceCode::terminate() {
+    executeProc->close();
+    terminated = 1;
+}
+
 void SourceCode::executeProcError(QProcess::ProcessError) {
     qDebug("execute process error");
     executionFailed(!timedOut);
@@ -89,7 +94,8 @@ CompiledSourceCode::CompiledSourceCode(QObject *parent) : SourceCode(parent) {
 }
 
 void CompiledSourceCode::compileProcFinished(int exit, QProcess::ExitStatus) {
-    loaderOutputArrived(exit, compileProc->readAllStandardError(), compileProc->readAllStandardOutput());
+    if (!hasTerminated())
+        loaderOutputArrived(exit, compileProc->readAllStandardError(), compileProc->readAllStandardOutput());
     if (exit == 0) {
         compiled = true;        
         runExecutable(inputBuffer, timeOutValueBuffer);
@@ -106,6 +112,11 @@ void CompiledSourceCode::compile() {
     compileList << QString(getExecutableFilePath() + getCodeExtension());
     compileProc->start(getWorkPath(), compileList);
     compileProc->closeWriteChannel();
+}
+
+void CompiledSourceCode::terminate() {
+    SourceCode::terminate();
+    compileProc->close();
 }
 
 void CompiledSourceCode::set(QString const& newCode) {

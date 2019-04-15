@@ -17,11 +17,11 @@ QObject(parent), acOut(ac), userOut(user), resultLine(line) {
     green.setBackground(QBrush(QColor(153, 255, 153)));
     red.setBackground(QBrush(QColor(255, 102, 102)));
     white.setBackground(QBrush(QColor(255, 255, 255)));
-}//constructor
+}
 
 void OutputHandler::setExecutionTime(const int t) {
     executionTime = t;
-}//setExecutionTime
+}
 
 void OutputHandler::clear() {
     acReady = userReady = false;
@@ -39,15 +39,7 @@ void OutputHandler::clear() {
     resultLine->setStyleSheet("QLabel{background: white;}");
     acOut->setStyleSheet("QPlainTextEdit{background: white;}");
     userOut->setStyleSheet("QPlainTextEdit{background: white;}");
-}//clear
-
-void OutputHandler::enableChainCheck() {
-    chainCheck = true;
-}//enableChainCheck
-
-void OutputHandler::disableChainCheck() {
-    chainCheck = false;
-}//disableChainCheck
+}
 
 void OutputHandler::acOutputReceived(const QByteArray& result) {
     QJsonDocument jsonResponse = QJsonDocument::fromJson(result);
@@ -59,18 +51,18 @@ void OutputHandler::acOutputReceived(const QByteArray& result) {
         acTxt = acOut->toPlainText().toStdString();
         userTxt = userOut->toPlainText().toStdString();
         compareOutputs();
-    }//if
-}//acOutputReceived
+    }
+}
 
 void OutputHandler::userProgTimedOut() {
     userOut->setPlainText("User program has timed out.");
     comparisonFinished();
-}//userProcTimedOut
+}
 
 void OutputHandler::userProgCrashed() {
     userOut->setPlainText("A runtime error occured.");
     comparisonFinished();
-}//userProgCrashed
+}
 
 void OutputHandler::userOutputReceived(const QByteArray& result) {
     userOut->document()->setPlainText(result);
@@ -79,8 +71,8 @@ void OutputHandler::userOutputReceived(const QByteArray& result) {
         acTxt = acOut->toPlainText().toStdString();
         userTxt = userOut->toPlainText().toStdString();
         compareOutputs();
-    }//if
-}//onProgFinished
+    }
+}
 
 void OutputHandler::compareOutputs() {
     if (!acReady || !userReady)
@@ -100,16 +92,14 @@ void OutputHandler::compareOutputs() {
     acOut->disable();
     userOut->disable();
 
-
-
     if (filter) {
         acOut->enableFilter();
         userOut->enableFilter();
-    }//if
+    }
     else {
         acOut->disableFilter();
         userOut->disableFilter();
-    }//else
+    }
 
     while (!cleared) {
         lineIdx++;
@@ -123,16 +113,20 @@ void OutputHandler::compareOutputs() {
         correct = (userLine == acLine);
         if (filter && correct)
             continue;
-        if (correct)
-            userOut->setCurrentCharFormat(green), acOut->setCurrentCharFormat(green);
+        if (correct) {
+            userOut->setCurrentCharFormat(green);
+            acOut->setCurrentCharFormat(green);
+        }
         else {
-            userOut->setCurrentCharFormat(red), acOut->setCurrentCharFormat(red), mismatches++;
+            userOut->setCurrentCharFormat(red);
+            acOut->setCurrentCharFormat(red);
+            mismatches++;
             if (filter) {
                 filterRowsAdded++;
                 acOut->setBlockValue(filterRowsAdded, lineIdx);
                 userOut->setBlockValue(filterRowsAdded, lineIdx);
-            }//if
-        }//else        
+            }
+        }
         acOut->document()->setDocumentMargin(0);
         userOut->document()->setDocumentMargin(0);
         acOut->insertPlainText(" ");
@@ -141,7 +135,7 @@ void OutputHandler::compareOutputs() {
         userOut->insertPlainText(userLine.c_str());
         acOut->insertPlainText("\n");
         userOut->insertPlainText("\n");
-    }//while
+    }
     if (filter && acOut->toPlainText().length() == 0) {
         acOut->disableFilter();
         userOut->disableFilter();
@@ -151,18 +145,18 @@ void OutputHandler::compareOutputs() {
         userOut->setCurrentCharFormat(green);
         acOut->appendPlainText("Accepted output matches\nuser output.");
         userOut->appendPlainText(userTxt.c_str());
-    }//if
+    }
     else {
         acOut->setStyleSheet("QPlainTextEdit {background: white} QScrollBar {background: rgb(184, 184, 184)}");
         userOut->setStyleSheet("QPlainTextEdit {background: white} QScrollBar {background: rgb(184, 184, 184)}");
-    }//else
+    }
     if (!mismatches) {
         resultLine->setStyleSheet("background: rgb(153, 255, 153); color: black; border: none;");
         QString result = "Outputs match! Runtime: ";
         result.append((std::to_string(executionTime)).c_str());
         result .append(" ms.");
         resultLine->setText(result);
-    }//if
+    }
     else {
         resultLine->setStyleSheet("background: rgb(255, 102, 102); color: black; border: none;");
         QString result = "The outputs are not identical: number of mismatched lines is ";
@@ -171,24 +165,15 @@ void OutputHandler::compareOutputs() {
         result.append(std::to_string(executionTime).c_str());
         result.append("ms.");
         resultLine->setText(result);
-    }//else
+    }
     acOut->enable();
     userOut->enable();
     acOut->update();
     userOut->update();
-
-    if (chainCheck) {
-        if (!mismatches) {
-            chainResult(true);
-            return;
-        }//if
-        chainResult(false);
-    }//if
-    else
-        comparisonFinished();
-}//compareOutputs
+    outputResult(!mismatches);
+}
 
 void OutputHandler::toggleFilter() {
     filter = !filter;
     compareOutputs();
-}//toggleFilter
+}

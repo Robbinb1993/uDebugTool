@@ -43,12 +43,13 @@ private:
     OutputHandler* outHandler;
     CodeEditor* codeEditor;
     InputChainChecker* chainChecker;
-    RIGChecker* rigchecker;
+    RIGChecker* rigChecker;
     HintsWindow* hintsWindow;
     QString currLang, inputFile;
     QMovie* movie;
+    QTimer *codeEditorShowTimer, *checkAllTimer;
     bool inputsReady = 1, hintsReady = 1, acOutputReady = 1, userOutputReady = 1, problemReady = 0;
-    bool procTerminate, chainTerminate, RIGCheckRunning;
+    bool procTerminate, allCheckRunning = 0, RIGCheckRunning = 0;
     int timeOutValue;
     int chainIdx;
 
@@ -59,6 +60,9 @@ private:
     void getRIGInput();
     void checkLoader();
     void execute();
+    void selectProblemNotification();
+    void stopChecking();
+    void showChainChecker();
 private slots:
     void inputsReceived(const QByteArray&);
     void hintFetchingFinished();
@@ -72,8 +76,6 @@ private slots:
     void on_filter_clicked();
     void on_submitCode_clicked();
     void on_timeLimitIn_editingFinished();
-    void chainResultReceived(const bool success);
-    void terminateChainCheck();
     void on_judgeSelect_currentIndexChanged(int index);
     void on_checkRIG_clicked();
     void RIGInputReceived(const QByteArray&);
@@ -83,11 +85,15 @@ private slots:
     void probNameReceived(const QString& probName);
     void multiOutputProblemDetected();
     void problemDescriptionReceived(const QString& url);
-    void loadingFailedReceived();
     void userOutputReceived(const QByteArray& output, const int time);
     void acOutputReceived(const QByteArray& output);
     void executionFailedReceived(bool crashed);
     void loaderErrorReceived();
+    void outputResultReceived(const bool success);
+    void chainCheckTerminated();
+    void showCodeEditor();
+    void showRIGChecker();
+    void checkAllStart();
 };
 
 #endif // MAINWINDOW_H

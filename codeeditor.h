@@ -25,7 +25,7 @@ public:
     explicit CodeEditor(const QString d, const QString windowName, QWidget *parent = nullptr);
     ~CodeEditor();
     void execute(const QString& input, const int timeOutValue);
-
+    void terminate();
 private slots:
     void on_loaderButton_clicked();
     void on_submitCodeButton_clicked();

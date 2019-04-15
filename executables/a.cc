@@ -1,34 +1,49 @@
-#include <cstdio>
+#include<cstdio>
+#include<vector>
+#include<algorithm>
+#include<queue>
+#include<cstdlib>
+#define MAX 100000+5
 
 using namespace std;
 
-int cycle(int num) {
-    int seq;
-    for (seq = 0; num != 1; seq++) {
-        num = (num % 2 == 0) ? (num >> 1) : (num * 3 + 1);
-    }
+int main()
+{
+    int t,tcase,n,q;
+    vector<int>num;
+    vector<int>test;
+    int a,b;
+    while(scanf("%d",&t)==1)
+    {
+        tcase=1;
+        while(t--)
+        {
+            scanf("%d %d",&n,&q);
+            num.clear();
+            for(int i=0;i<n;i++)
+            {
+                scanf("%d",&a);
+                num.push_back(a);
+            }
+            printf("Case %d:\n",tcase++);
+            while(q--)
+            {
 
-    return seq + 1;
-}
-
-int iter (int start, int end) {
-    int seq, length = 0, i;
-
-    for (i = start; i <= end; i++) {
-        seq = cycle(i);
-        if (seq > length)
-            length = seq;
-    }
-    return length;
-}
-
-int main(int argc, const char* argv[]) {
-    int start, end;
-    while(scanf("%d %d", &start, &end) == 2) {
-        if(start < end)
-            printf("%d %d %d\n", start, end, iter(start, end));
-        else
-            printf("%d %d %d\n", start, end, iter(end, start));
+                scanf("%d %d",&a,&b);
+                test.clear();
+                if(b-a>1000)printf("0\n");
+                else
+                {
+                    for(int i=a;i<=b;i++)
+                    test.push_back(num[i]);
+                    sort(test.begin(),test.end());
+                    int ans=10000;
+                    for(int i=1;i<test.size();i++)
+                        ans=min(ans,test[i]-test[i-1]);
+                    printf("%d\n",ans);
+                }
+            }
+        }
     }
     return 0;
 }

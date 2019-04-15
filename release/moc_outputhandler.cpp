@@ -22,7 +22,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_OutputHandler_t {
     QByteArrayData data[5];
-    char stringdata0[54];
+    char stringdata0[55];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -32,13 +32,13 @@ struct qt_meta_stringdata_OutputHandler_t {
 static const qt_meta_stringdata_OutputHandler_t qt_meta_stringdata_OutputHandler = {
     {
 QT_MOC_LITERAL(0, 0, 13), // "OutputHandler"
-QT_MOC_LITERAL(1, 14, 11), // "chainResult"
-QT_MOC_LITERAL(2, 26, 0), // ""
-QT_MOC_LITERAL(3, 27, 7), // "success"
-QT_MOC_LITERAL(4, 35, 18) // "comparisonFinished"
+QT_MOC_LITERAL(1, 14, 12), // "outputResult"
+QT_MOC_LITERAL(2, 27, 0), // ""
+QT_MOC_LITERAL(3, 28, 7), // "success"
+QT_MOC_LITERAL(4, 36, 18) // "comparisonFinished"
 
     },
-    "OutputHandler\0chainResult\0\0success\0"
+    "OutputHandler\0outputResult\0\0success\0"
     "comparisonFinished"
 };
 #undef QT_MOC_LITERAL
@@ -73,7 +73,7 @@ void OutputHandler::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
         OutputHandler *_t = static_cast<OutputHandler *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->chainResult((*reinterpret_cast< const bool(*)>(_a[1]))); break;
+        case 0: _t->outputResult((*reinterpret_cast< const bool(*)>(_a[1]))); break;
         case 1: _t->comparisonFinished(); break;
         default: ;
         }
@@ -81,7 +81,7 @@ void OutputHandler::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
         int *result = reinterpret_cast<int *>(_a[0]);
         {
             typedef void (OutputHandler::*_t)(const bool );
-            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&OutputHandler::chainResult)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&OutputHandler::outputResult)) {
                 *result = 0;
                 return;
             }
@@ -133,7 +133,7 @@ int OutputHandler::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void OutputHandler::chainResult(const bool _t1)
+void OutputHandler::outputResult(const bool _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);

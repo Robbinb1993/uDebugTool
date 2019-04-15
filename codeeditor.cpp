@@ -4,6 +4,7 @@
 
 void CodeEditor::setLayout() {    
     this->setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+    this->setWindowFlags(windowFlags() | Qt::WindowMinimizeButtonHint);
     ui->loaderOutput->viewport()->setCursor(Qt::ArrowCursor);
 
     QTextOption option = ui->codeEditor->document()->defaultTextOption();
@@ -34,6 +35,10 @@ CodeEditor::CodeEditor(const QString d, const QString windowName, QWidget *paren
 
 CodeEditor::~CodeEditor() {
     delete ui;
+}
+
+void CodeEditor::terminate() {
+    sourcecode->terminate();
 }
 
 void CodeEditor::setSourcecode(const QString& langName) {
@@ -78,8 +83,6 @@ void CodeEditor::loaderOutputReceived(int ret, const QByteArray& error, const QB
     if (ret != 0) {
         ui->loaderOutput->setPlainText("Compiler error:\n" + error + "\n" + output);
         loaderErrorArrived();
-        raise();
-        show();
     }//if
     else
         ui->loaderOutput->setPlainText("Code succesfully " + sourcecode->getLanguageType() + ".\n\n" + error + "\n" + output);

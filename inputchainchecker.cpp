@@ -8,7 +8,7 @@ InputChainChecker::InputChainChecker(QWidget *parent) :
     ui->setupUi(this);
     setWindowTitle("Input Chain Check");
     setWindowModality(Qt::WindowModal);
-    this->setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     installEventFilter(this);
 }
 
@@ -37,7 +37,6 @@ void InputChainChecker::progress(const int idx, const int tot) {
         txt.append(std::to_string(tot).c_str());
         txt.append(" inputs have been checked.");
     }//else
-    qDebug() << "TEST";
     ui->info->setText(txt);
 }//progress
 
@@ -51,10 +50,7 @@ void InputChainChecker::mismatchFound(const int idx) {
     ui->closeButton->show();
 }//mismatchFound
 
-void InputChainChecker::chainTerminated() {
-    ui->closeButton->show();
-}//chainTerminated
-
 void InputChainChecker::on_closeButton_clicked() {
     close();
+    windowClosed();
 }//on_closeButton_clicked

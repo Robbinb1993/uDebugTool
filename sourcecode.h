@@ -14,11 +14,12 @@ class SourceCode : public QObject {
     Q_OBJECT
     public:
         explicit SourceCode(QObject*);
-        virtual ~SourceCode() {executeProc->close();}
+        virtual ~SourceCode() {terminate();}
         virtual void execute(const QString&, const int) {}
-        virtual void set(const QString& newCode) {code = newCode;}
+        virtual void set(const QString& newCode) {code = newCode; terminated = false;}
         void setPath(const QString& newPath) {workPath = newPath;}
         void setFlags(const QString& newFlags) {flags = newFlags;}
+        virtual void terminate();
         QString getLanguageType();
         QString getLoaderType();
     protected:
@@ -28,6 +29,7 @@ class SourceCode : public QObject {
         void setType(const SourceCodeType& t) {type = t;}
         void runExecutable(const QString& input, int timeOutValue);
         void terminateExecution();
+        bool hasTerminated() {return terminated;}
         QString getWorkPath() {return workPath;}
         QString getExecutableFilePath() {return executableFilePath;}
         QString getCodeExtension() {return codeExtension;}
@@ -43,6 +45,7 @@ class SourceCode : public QObject {
         QTime timeMeasure;
         QTimer timer;
         bool timedOut;
+        bool terminated = 0;
     private slots:
         void executeProcFinished(int, QProcess::ExitStatus);
         void executeProcError(QProcess::ProcessError);
@@ -57,9 +60,10 @@ class CompiledSourceCode : public SourceCode {
     Q_OBJECT
     public:
         explicit CompiledSourceCode(QObject*);
-        virtual ~CompiledSourceCode() override {compileProc->close();}
+        virtual ~CompiledSourceCode() override {terminate();}
         void set(const QString &newCode) override;
         void execute(const QString& input, const int timeOutValue) override;
+        void terminate() override;
     private:
         void compile();        
         QProcess *compileProc;

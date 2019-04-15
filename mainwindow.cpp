@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <string>
 
 void MainWindow::setLayout() {
     QCoreApplication::setApplicationName("uDebug Tool");
@@ -57,12 +56,11 @@ MainWindow::MainWindow(QWidget *parent) :
     currLang = "";
     hintsWindow = new HintsWindow(this);
     chainChecker = new InputChainChecker(this);
-    connect(chainChecker, SIGNAL(windowClosed()), this, SLOT(terminateChainCheck()));
+    connect(chainChecker, SIGNAL(windowClosed()), this, SLOT(chainCheckTerminated()));
 
-    rigchecker = new RIGChecker(this);
-    connect(rigchecker, SIGNAL(windowClosed()), this, SLOT(terminateChainCheck()));
-    connect(rigchecker, SIGNAL(RIGCheckStart()), this, SLOT(RIGStart()));
-    connect(rigchecker, SIGNAL(sendInput(const QByteArray&)), this, SLOT(RIGInputReceived(const QByteArray&)));
+    rigChecker = new RIGChecker(this);
+    connect(rigChecker, SIGNAL(RIGCheckStart()), this, SLOT(RIGStart()));
+    connect(rigChecker, SIGNAL(sendInput(const QByteArray&)), this, SLOT(RIGInputReceived(const QByteArray&)));
 
     codeEditor = new CodeEditor("executables", "Code Loader", this);
     connect(codeEditor, SIGNAL(outputReady(const QByteArray&, const int)), this, SLOT(userOutputReceived(const QByteArray&, const int)));
@@ -70,8 +68,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(codeEditor, SIGNAL(loaderErrorArrived()), this, SLOT(loaderErrorReceived()));
 
     outHandler = new OutputHandler(this, ui->acOut, ui->userOut, ui->resultLine);
-    connect(outHandler, SIGNAL(chainResult(bool)), this, SLOT(chainResultReceived(bool)));
-    connect(outHandler, SIGNAL(comparisonFinished()), this, SLOT(comparisonFinished()));
+    connect(outHandler, SIGNAL(outputResult(bool)), this, SLOT(outputResultReceived(bool)));
     connect(ui->acOut->verticalScrollBar(), &QAbstractSlider::valueChanged, ui->userOut->verticalScrollBar(), &QAbstractSlider::setValue);
     connect(ui->userOut->verticalScrollBar(), &QAbstractSlider::valueChanged, ui->acOut->verticalScrollBar(), &QAbstractSlider::setValue);
     connect(ui->acOut->horizontalScrollBar(), &QAbstractSlider::valueChanged, ui->userOut->horizontalScrollBar(), &QAbstractSlider::setValue);
@@ -91,6 +88,14 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(netmgr, SIGNAL(multiOutputProblem()), this, SLOT(multiOutputProblemDetected()));
     connect(netmgr, SIGNAL(problemDescriptionReady(const QString&)), this, SLOT(problemDescriptionReceived(const QString&)));
 
+    codeEditorShowTimer = new QTimer(this);
+    codeEditorShowTimer->setSingleShot(true);
+    connect(codeEditorShowTimer, SIGNAL(timeout()), SLOT(showCodeEditor()));
+
+    checkAllTimer = new QTimer(this);
+    checkAllTimer->setSingleShot(true);
+    connect(checkAllTimer, SIGNAL(timeout()), SLOT(checkAllStart()));
+
     setTimeout();
 
     installEventFilter(this);
@@ -101,7 +106,7 @@ MainWindow::MainWindow(QWidget *parent) :
 bool MainWindow::eventFilter(QObject *, QEvent *event) {    
     if (event && event->type() == QEvent::WindowActivate) {
         codeEditor->hide();
-        rigchecker->hide();
+        rigChecker->hide();
         return true;
     }//if
     return false;
@@ -154,16 +159,23 @@ void MainWindow::testcaseReceived(const QByteArray& result) {
 }
 
 void MainWindow::userOutputReceived(const QByteArray& output, const int time) {
-    outHandler->userOutputReceived(output);
-    outHandler->setExecutionTime(time);
-    userOutputReady = true;
-    checkLoader();
+    if (!userOutputReady) {
+        outHandler->userOutputReceived(output);
+        outHandler->setExecutionTime(time);
+        userOutputReady = true;
+        checkLoader();
+    }
 }
 
 void MainWindow::acOutputReceived(const QByteArray& output) {
-    outHandler->acOutputReceived(output);
-    acOutputReady = true;
-    checkLoader();
+    qDebug() << "acOutputReceived";
+    qDebug() << acOutputReady;
+    if (!acOutputReady) {
+        qDebug() << "set to true";
+        acOutputReady = true;
+        outHandler->acOutputReceived(output);
+        checkLoader();
+    }
 }
 
 void MainWindow::on_searchProb_clicked() {
@@ -179,7 +191,7 @@ void MainWindow::on_searchProb_clicked() {
     }
 
     ui->probNameLabel->clear();
-    rigchecker->clear();
+    rigChecker->clear();
     ui->customIn->clear();
     ui->inputTable->clear();
     outHandler->clear();
@@ -201,60 +213,92 @@ void MainWindow::checkLoader() {
         ui->loadLabel->hide();
 }
 
+void MainWindow::stopChecking() {
+    allCheckRunning = RIGCheckRunning = false;
+    acOutputReady = userOutputReady = true;
+    chainChecker->hide();
+    rigChecker->hide();
+    checkLoader();
+}
+
 void MainWindow::execute() {
     outHandler->clear();
     acOutputReady = userOutputReady = false;
     QString input = ui->customIn->toPlainText();
     netmgr->postCustomInput(judges[ui->judgeSelect->currentIndex()], ui->problemId->text(), input);
-    codeEditor->execute(input, timeOutValue);
     ui->acOut->setPlainText("Accepted output\nis being fetched.");
+    codeEditor->execute(input, timeOutValue);
 }
 
-void MainWindow::on_checkIn_clicked() {    
-    if (!problemReady)
-        return;    
-    ui->loadLabel->show();    
-    outHandler->disableChainCheck();
+void MainWindow::selectProblemNotification() {
+    QMessageBox::information(this, tr("Message"), tr("Please select a problem."));
+}
+
+void MainWindow::on_checkIn_clicked() {
+    if (!problemReady) {
+        selectProblemNotification();
+        return;
+    }
+    ui->loadLabel->show();
+    RIGCheckRunning = false;
+    allCheckRunning = false;
     execute();
 }
 
-void MainWindow::on_checkAll_clicked() {    
-    if (!problemReady)
-        return;
+void MainWindow::showChainChecker() {
+    chainChecker->show();
+    chainChecker->raise();
+    chainChecker->setFocus();
+}
+
+void MainWindow::showRIGChecker() {
+    rigChecker->show();
+    rigChecker->raise();
+    rigChecker->setFocus();
+}
+
+void MainWindow::checkAllStart() {
+    qDebug() << "START";
+    ui->loadLabel->show();
+    RIGCheckRunning = false;
+    allCheckRunning = true;
+    chainIdx = 1;
+    executeNextInTable();
+    chainChecker->progress(0, ui->inputTable->rowCount());
+    showChainChecker();
+}
+
+void MainWindow::on_checkAll_clicked() {
+    if (!problemReady) {
+        selectProblemNotification();
+        return;        
+    }
     if (!ui->inputTable->isReady()) {
         QMessageBox::information(this, tr("Message"), tr("Please wait until all test cases have been fetched."));
         return;
     }//if
-    ui->loadLabel->show();
-    RIGCheckRunning = false;
-    outHandler->enableChainCheck();
-    chainChecker->progress(0, ui->inputTable->rowCount());
-    chainTerminate = false;
-    chainIdx = 1;
-    executeNextInTable();
-    chainChecker->show();
+    checkAllTimer->start(250);
 }
 
 void MainWindow::on_checkRIG_clicked() {
-    if (!problemReady)
+    if (!problemReady) {
+        selectProblemNotification();
         return;
-    if (!rigchecker->isVisible())
-        rigchecker->show();
-    rigchecker->raise();
-    rigchecker->activateWindow();
+    }
+    showRIGChecker();
 }
 
 void MainWindow::RIGInputReceived(const QByteArray& in) {
     ui->customIn->setPlainText(QString::fromLocal8Bit(in));
+    execute();
 }
 
 void MainWindow::RIGStart() {
     RIGCheckRunning = true;
-    chainTerminate = false;
-    ui->loadLabel->show();
-    outHandler->enableChainCheck();
-    chainChecker->show();
-    chainChecker->progress(0, rigchecker->getIterations());
+    allCheckRunning = true;
+    ui->loadLabel->show();    
+    chainChecker->progress(0, rigChecker->getIterations());
+    showChainChecker();
     chainIdx = 1;
     getRIGInput();
 }
@@ -262,6 +306,8 @@ void MainWindow::RIGStart() {
 void MainWindow::executeNextInTable() {
     if (chainIdx <= ui->inputTable->rowCount()) {
         ui->customIn->setPlainText(ui->inputTable->requestInfo(chainIdx - 1));
+        userOutputReady = acOutputReady = false;
+        qDebug() << "set to false";
         execute();
     }
     else {
@@ -271,38 +317,30 @@ void MainWindow::executeNextInTable() {
 }
 
 void MainWindow::getRIGInput() {
-    if (chainIdx <= rigchecker->getIterations())
-        rigchecker->fetchNextInput();
+    if (chainIdx <= rigChecker->getIterations())
+        rigChecker->fetchNextInput();
     else {
         checkLoader();
         outHandler->clear();
     }
 }
 
-void MainWindow::chainResultReceived(const bool success) {
-    if (chainTerminate)
-        return;
-    if (success) {
-        if (RIGCheckRunning) {
-            chainChecker->progress(chainIdx++, rigchecker->getIterations());
-            getRIGInput();
+void MainWindow::outputResultReceived(const bool success) {
+    if (allCheckRunning) {
+        if (success) {
+            if (RIGCheckRunning) {
+                chainChecker->progress(chainIdx++, rigChecker->getIterations());
+                getRIGInput();
+            }
+            else {
+                chainChecker->progress(chainIdx++, ui->inputTable->rowCount());
+                executeNextInTable();
+            }
+            return;
         }
-        else {
-            chainChecker->progress(chainIdx++, ui->inputTable->rowCount());
-            executeNextInTable();
-        }
+        else
+            chainChecker->mismatchFound(chainIdx);
     }
-    else {
-        checkLoader();
-        qDebug() << "MISMATCH";
-        chainChecker->mismatchFound(chainIdx);
-        terminateChainCheck();
-    }
-}
-
-void MainWindow::terminateChainCheck() {
-    chainTerminate = true;
-    chainChecker->chainTerminated();
     checkLoader();
 }
 
@@ -319,10 +357,7 @@ void MainWindow::on_filter_clicked() {
 }
 
 void MainWindow::on_submitCode_clicked() {
-    if (!codeEditor->isVisible())
-        codeEditor->show();
-    codeEditor->raise();
-    codeEditor->activateWindow();
+    showCodeEditor();
 }
 
 void MainWindow::on_timeLimitIn_editingFinished() {
@@ -353,21 +388,30 @@ void MainWindow::reqHint(const QString& id) {
     netmgr->getHint(id);
 }
 
-void MainWindow::loadingFailedReceived() {
-    userOutputReady = true;
-    outHandler->clear();
-}
-
 void MainWindow::executionFailedReceived(bool crashed) {
     if (crashed)
         outHandler->userProgCrashed();
     else
         outHandler->userProgTimedOut();
-    userOutputReady = true;
-    checkLoader();
+    if (allCheckRunning)
+        chainChecker->mismatchFound(chainIdx);
+    stopChecking();
+}
+
+void MainWindow::showCodeEditor() {
+    codeEditor->show();
+    codeEditor->raise();
+    codeEditor->activateWindow();
 }
 
 void MainWindow::loaderErrorReceived() {
-    userOutputReady = true;
-    checkLoader();
+    stopChecking();
+    //timer calls showCodeEditor function
+    codeEditorShowTimer->start(200); //timer used so that rigchecker window and chainchecker window have time to close
+}
+
+void MainWindow::chainCheckTerminated() {
+    stopChecking();
+    codeEditor->terminate();
+    rigChecker->terminate();
 }

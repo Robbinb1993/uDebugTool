@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_RIGChecker_t {
-    QByteArrayData data[15];
-    char stringdata0[183];
+    QByteArrayData data[16];
+    char stringdata0[215];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -37,22 +37,24 @@ QT_MOC_LITERAL(2, 20, 0), // ""
 QT_MOC_LITERAL(3, 21, 9), // "sendInput"
 QT_MOC_LITERAL(4, 31, 2), // "in"
 QT_MOC_LITERAL(5, 34, 13), // "RIGCheckStart"
-QT_MOC_LITERAL(6, 48, 12), // "windowClosed"
+QT_MOC_LITERAL(6, 48, 12), // "terminateRIG"
 QT_MOC_LITERAL(7, 61, 18), // "on_loadRIG_clicked"
 QT_MOC_LITERAL(8, 80, 33), // "on_iterationsLine_editingFini..."
 QT_MOC_LITERAL(9, 114, 6), // "setRIG"
-QT_MOC_LITERAL(10, 121, 5), // "pName"
-QT_MOC_LITERAL(11, 127, 4), // "lang"
-QT_MOC_LITERAL(12, 132, 16), // "on_check_clicked"
-QT_MOC_LITERAL(13, 149, 12), // "procFinished"
-QT_MOC_LITERAL(14, 162, 20) // "QProcess::ExitStatus"
+QT_MOC_LITERAL(10, 121, 16), // "on_check_clicked"
+QT_MOC_LITERAL(11, 138, 23), // "executionFailedReceived"
+QT_MOC_LITERAL(12, 162, 7), // "crashed"
+QT_MOC_LITERAL(13, 170, 17), // "RIGOutputReceived"
+QT_MOC_LITERAL(14, 188, 6), // "output"
+QT_MOC_LITERAL(15, 195, 19) // "loaderErrorReceived"
 
     },
     "RIGChecker\0RIGCrash\0\0sendInput\0in\0"
-    "RIGCheckStart\0windowClosed\0"
+    "RIGCheckStart\0terminateRIG\0"
     "on_loadRIG_clicked\0on_iterationsLine_editingFinished\0"
-    "setRIG\0pName\0lang\0on_check_clicked\0"
-    "procFinished\0QProcess::ExitStatus"
+    "setRIG\0on_check_clicked\0executionFailedReceived\0"
+    "crashed\0RIGOutputReceived\0output\0"
+    "loaderErrorReceived"
 };
 #undef QT_MOC_LITERAL
 
@@ -62,7 +64,7 @@ static const uint qt_meta_data_RIGChecker[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       9,   14, // methods
+      11,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -70,17 +72,19 @@ static const uint qt_meta_data_RIGChecker[] = {
        4,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    0,   59,    2, 0x06 /* Public */,
-       3,    1,   60,    2, 0x06 /* Public */,
-       5,    0,   63,    2, 0x06 /* Public */,
-       6,    0,   64,    2, 0x06 /* Public */,
+       1,    0,   69,    2, 0x06 /* Public */,
+       3,    1,   70,    2, 0x06 /* Public */,
+       5,    0,   73,    2, 0x06 /* Public */,
+       6,    0,   74,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       7,    0,   65,    2, 0x08 /* Private */,
-       8,    0,   66,    2, 0x08 /* Private */,
-       9,    2,   67,    2, 0x08 /* Private */,
-      12,    0,   72,    2, 0x08 /* Private */,
-      13,    2,   73,    2, 0x08 /* Private */,
+       7,    0,   75,    2, 0x08 /* Private */,
+       8,    0,   76,    2, 0x08 /* Private */,
+       9,    0,   77,    2, 0x08 /* Private */,
+      10,    0,   78,    2, 0x08 /* Private */,
+      11,    1,   79,    2, 0x08 /* Private */,
+      13,    2,   82,    2, 0x08 /* Private */,
+      15,    0,   87,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void,
@@ -91,9 +95,11 @@ static const uint qt_meta_data_RIGChecker[] = {
  // slots: parameters
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString, QMetaType::QString,   10,   11,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int, 0x80000000 | 14,    2,    2,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::Bool,   12,
+    QMetaType::Void, QMetaType::QByteArray, QMetaType::Int,   14,    2,
+    QMetaType::Void,
 
        0        // eod
 };
@@ -107,12 +113,14 @@ void RIGChecker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 0: _t->RIGCrash(); break;
         case 1: _t->sendInput((*reinterpret_cast< const QByteArray(*)>(_a[1]))); break;
         case 2: _t->RIGCheckStart(); break;
-        case 3: _t->windowClosed(); break;
+        case 3: _t->terminateRIG(); break;
         case 4: _t->on_loadRIG_clicked(); break;
         case 5: _t->on_iterationsLine_editingFinished(); break;
-        case 6: _t->setRIG((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
+        case 6: _t->setRIG(); break;
         case 7: _t->on_check_clicked(); break;
-        case 8: _t->procFinished((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< QProcess::ExitStatus(*)>(_a[2]))); break;
+        case 8: _t->executionFailedReceived((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 9: _t->RIGOutputReceived((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const int(*)>(_a[2]))); break;
+        case 10: _t->loaderErrorReceived(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -140,7 +148,7 @@ void RIGChecker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         }
         {
             typedef void (RIGChecker::*_t)();
-            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&RIGChecker::windowClosed)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&RIGChecker::terminateRIG)) {
                 *result = 3;
                 return;
             }
@@ -173,13 +181,13 @@ int RIGChecker::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 9)
+        if (_id < 11)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 9;
+        _id -= 11;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 9)
+        if (_id < 11)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 9;
+        _id -= 11;
     }
     return _id;
 }
@@ -204,7 +212,7 @@ void RIGChecker::RIGCheckStart()
 }
 
 // SIGNAL 3
-void RIGChecker::windowClosed()
+void RIGChecker::terminateRIG()
 {
     QMetaObject::activate(this, &staticMetaObject, 3, nullptr);
 }
