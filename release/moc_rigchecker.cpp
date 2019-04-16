@@ -82,9 +82,9 @@ static const uint qt_meta_data_RIGChecker[] = {
        8,    0,   76,    2, 0x08 /* Private */,
        9,    0,   77,    2, 0x08 /* Private */,
       10,    0,   78,    2, 0x08 /* Private */,
-      11,    1,   79,    2, 0x08 /* Private */,
-      13,    2,   82,    2, 0x08 /* Private */,
-      15,    0,   87,    2, 0x08 /* Private */,
+      11,    2,   79,    2, 0x08 /* Private */,
+      13,    2,   84,    2, 0x08 /* Private */,
+      15,    0,   89,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void,
@@ -97,7 +97,7 @@ static const uint qt_meta_data_RIGChecker[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Bool,   12,
+    QMetaType::Void, QMetaType::QByteArray, QMetaType::Bool,    2,   12,
     QMetaType::Void, QMetaType::QByteArray, QMetaType::Int,   14,    2,
     QMetaType::Void,
 
@@ -118,7 +118,7 @@ void RIGChecker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 5: _t->on_iterationsLine_editingFinished(); break;
         case 6: _t->setRIG(); break;
         case 7: _t->on_check_clicked(); break;
-        case 8: _t->executionFailedReceived((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 8: _t->executionFailedReceived((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2]))); break;
         case 9: _t->RIGOutputReceived((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const int(*)>(_a[2]))); break;
         case 10: _t->loaderErrorReceived(); break;
         default: ;

@@ -1,49 +1,108 @@
-#include<cstdio>
-#include<vector>
-#include<algorithm>
-#include<queue>
-#include<cstdlib>
-#define MAX 100000+5
-
+#include <bits/stdc++.h>
 using namespace std;
+#pragma GCC diagnostic warning "-std=c++11"
+ 
+using ll = long long;
 
-int main()
-{
-    int t,tcase,n,q;
-    vector<int>num;
-    vector<int>test;
-    int a,b;
-    while(scanf("%d",&t)==1)
-    {
-        tcase=1;
-        while(t--)
-        {
-            scanf("%d %d",&n,&q);
-            num.clear();
-            for(int i=0;i<n;i++)
-            {
-                scanf("%d",&a);
-                num.push_back(a);
-            }
-            printf("Case %d:\n",tcase++);
-            while(q--)
-            {
+const int sz = 3e5 + 10;
+const int pr_sz = 1e6 + 10;
+const double eps = 1e-9;
 
-                scanf("%d %d",&a,&b);
-                test.clear();
-                if(b-a>1000)printf("0\n");
-                else
-                {
-                    for(int i=a;i<=b;i++)
-                    test.push_back(num[i]);
-                    sort(test.begin(),test.end());
-                    int ans=10000;
-                    for(int i=1;i<test.size();i++)
-                        ans=min(ans,test[i]-test[i-1]);
-                    printf("%d\n",ans);
-                }
+#define sqr( a ) ( ( a ) * ( a ) )
+
+int t, cs;
+int k;
+ll n;
+unsigned int dp[55][55];
+
+int mat_sz = 2;
+struct Matrix {
+    unsigned int a[55][55];
+    void clear() {
+        memset(a, 0, sizeof(a));
+    }
+    void one() {
+        for( int i=0; i<mat_sz; i++ ) {
+            for( int j=0; j<mat_sz; j++ ) {
+                a[i][j] = i == j;
             }
         }
     }
-    return 0;
+    Matrix operator + (const Matrix &b) const {
+        Matrix tmp;
+        tmp.clear();
+        for (int i = 0; i <  mat_sz; i++) {
+            for (int j = 0; j < mat_sz; j++) {
+                tmp.a[i][j] = a[i][j] + b.a[i][j];
+            }
+        }
+        return tmp;
+    }
+    Matrix operator * (const Matrix &b) const {
+        Matrix tmp;
+        tmp.clear();
+        for (int i = 0; i < mat_sz; i++) {
+            for (int j = 0; j < mat_sz; j++) {
+                for (int k = 0; k < mat_sz; k++) {
+                    tmp.a[i][k] += ( a[i][j] * b.a[j][k] );
+                }
+            }
+        }
+        return tmp;
+    }
+    Matrix pw(ll x) {
+        Matrix ans, num = *this;
+        ans.one();
+        while (x > 0) {
+            if (x & 1) {
+                ans = ans * num;
+            }
+            num = num * num;
+            x >>= 1;
+        }
+        return ans;
+    }
+} mat;
+
+unsigned int solve() {
+        mat.clear();
+        for( int i=0; i<=k; i++ ) {
+                for( int j=0; j<=i; j++ ) {
+                        mat.a[i][j] = dp[i][i - j];
+                }
+        }
+        for( int i=0; i<=k; i++ ) {
+                mat.a[k + 1][i] = dp[k][k - i];
+        }
+        mat.a[k + 1][k + 1] = 1;
+        mat = mat.pw( n - 1ll );
+        unsigned int ans = 0;
+        for( int i=0; i<=k+1; i++ ) ans += mat.a[k+1][i];
+        return ans;
+}
+
+int main() {
+#ifdef CLown1331
+        freopen( "in.txt","r",stdin );
+#endif /// CLown1331
+
+        for( int i=0; i<55; i++ ) {
+                for( int j=0; j<=i; j++ ) {
+                        if( j == 0 || j == i ) dp[i][j] = 1;
+                        else dp[i][j] = ( dp[i-1][j] + dp[i-1][j-1] );
+                }
+        }
+
+        scanf( "%d", &t );
+
+        for( cs=1; cs<=t; cs++ ) {
+
+                scanf( "%lld %d", &n, &k );
+
+                mat_sz = k + 2;
+
+                printf( "Case %d: %u\n", cs, solve() );
+        }
+
+        return 0;
 }

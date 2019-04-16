@@ -55,15 +55,12 @@ void CodeEditor::setSourcecode(const QString& langName) {
         sourcecode = new SourceCodeJava(this);
     else if (langName == "Python")
         sourcecode = new SourceCodePython(this);
-    else {
-        qDebug("Language could not be found");
+    else
         sourcecode = new SourceCode(this);
-    }
 
-    qDebug() << "CONNECT";
     connect(sourcecode, SIGNAL(outputArrived(const QByteArray&, const int)), this, SLOT(outputReceived(const QByteArray&, const int)));
     connect(sourcecode, SIGNAL(loaderOutputArrived(int, const QByteArray&, const QByteArray&)), this, SLOT(loaderOutputReceived(int, const QByteArray&, const QByteArray&)));
-    connect(sourcecode, SIGNAL(executionFailed(bool)), this, SLOT(executionFailArrived(bool)));
+    connect(sourcecode, SIGNAL(executionFailed(const QByteArray&, bool)), this, SLOT(executionFailArrived(const QByteArray&, bool)));
 
     sourcecode->setFlags(flags);
     sourcecode->setPath(path);
@@ -74,8 +71,9 @@ void CodeEditor::setSourcecode(const QString& langName) {
     ui->loaderLabel->setText(loaderLabelText);
 }
 
-void CodeEditor::execute(const QString& input, const int timeOutValue) {
-    sourcecode->set(ui->codeEditor->toPlainText());
+void CodeEditor::execute(const QString& input, const int timeOutValue, const bool firstInput) {
+    if (firstInput)
+        sourcecode->set(ui->codeEditor->toPlainText());
     sourcecode->execute(input, timeOutValue);
 }
 

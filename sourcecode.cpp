@@ -14,12 +14,11 @@ SourceCode::SourceCode(QObject *parent) : QObject(parent) {
     connect(&timer, SIGNAL(timeout()), this, SLOT(procTimedOut()));
 }
 
-void SourceCode::executeProcFinished(int, QProcess::ExitStatus status) {
-    qDebug() << timeMeasure.elapsed();
-    if (status == QProcess::ExitStatus::NormalExit)
+void SourceCode::executeProcFinished(int ret, QProcess::ExitStatus status) {
+    if (!ret)
         outputArrived(executeProc->readAllStandardOutput(), timeMeasure.elapsed());
     else
-        executionFailed(!timedOut);
+        executionFailed(executeProc->readAllStandardError(), !timedOut);
 }
 
 void SourceCode::terminate() {
@@ -28,8 +27,7 @@ void SourceCode::terminate() {
 }
 
 void SourceCode::executeProcError(QProcess::ProcessError) {
-    qDebug("execute process error");
-    executionFailed(!timedOut);
+    executionFailed(executeProc->readAllStandardError(), !timedOut);
 }
 
 void SourceCode::procTimedOut() {
@@ -72,13 +70,17 @@ QString SourceCode::getLoaderType() {
         return "interpreter";
 }
 
-void SourceCode::runExecutable(const QString &input, int timeOutValue) {
-    executeProc->start(executableFilePath);
-    executeProc->write(input.toStdString().c_str());
-    executeProc->closeWriteChannel();
+void SourceCode::setTimer(const int timeOutValue) {
     timedOut = false;
     timeMeasure.start();
     timer.start(timeOutValue);
+}
+
+void SourceCode::runExecutable(const QString &input, const int timeOutValue) {
+    executeProc->start(executableFilePath);
+    executeProc->write(input.toStdString().c_str());
+    executeProc->closeWriteChannel();
+    setTimer(timeOutValue);
 }
 
 void SourceCode::terminateExecution() {
@@ -94,6 +96,7 @@ CompiledSourceCode::CompiledSourceCode(QObject *parent) : SourceCode(parent) {
 }
 
 void CompiledSourceCode::compileProcFinished(int exit, QProcess::ExitStatus) {
+    qDebug() << "COMPILED";
     if (!hasTerminated())
         loaderOutputArrived(exit, compileProc->readAllStandardError(), compileProc->readAllStandardOutput());
     if (exit == 0) {
@@ -104,7 +107,6 @@ void CompiledSourceCode::compileProcFinished(int exit, QProcess::ExitStatus) {
 
 void CompiledSourceCode::compile() {    
     terminateExecution();
-    compileProc->terminate();
     compileProc->close();
     QStringList compileList;
     addFlagsToList(compileList);
@@ -145,5 +147,21 @@ SourceCodeCType::SourceCodeCType(QObject* parent, const QString& type) : Compile
     else if (type == "C#") {
         setCodeExtension(".cs");
     }
+}
+
+void InterpretedSourceCode::runExecutable(const QString& input, const int timeOutValue) {
+    getExecuteProc()->close();
+    QStringList interpreteList;
+    addFlagsToList(interpreteList);
+    createCodeFile();
+    interpreteList << QString(getExecutableFilePath() + getCodeExtension());
+    getExecuteProc()->start(getWorkPath(), interpreteList);
+    getExecuteProc()->write(input.toStdString().c_str());
+    getExecuteProc()->closeWriteChannel();
+    setTimer(timeOutValue);
+}
+
+void InterpretedSourceCode::execute(const QString& input, const int timeOutValue) {
+    runExecutable(input, timeOutValue);
 }
 

@@ -64,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     codeEditor = new CodeEditor("executables", "Code Loader", this);
     connect(codeEditor, SIGNAL(outputReady(const QByteArray&, const int)), this, SLOT(userOutputReceived(const QByteArray&, const int)));
-    connect(codeEditor, SIGNAL(executionFailed(bool)), this, SLOT(executionFailedReceived(bool)));
+    connect(codeEditor, SIGNAL(executionFailed(const QByteArray&, bool)), this, SLOT(executionFailedReceived(const QByteArray&, bool)));
     connect(codeEditor, SIGNAL(loaderErrorArrived()), this, SLOT(loaderErrorReceived()));
 
     outHandler = new OutputHandler(this, ui->acOut, ui->userOut, ui->resultLine);
@@ -168,10 +168,7 @@ void MainWindow::userOutputReceived(const QByteArray& output, const int time) {
 }
 
 void MainWindow::acOutputReceived(const QByteArray& output) {
-    qDebug() << "acOutputReceived";
-    qDebug() << acOutputReady;
     if (!acOutputReady) {
-        qDebug() << "set to true";
         acOutputReady = true;
         outHandler->acOutputReceived(output);
         checkLoader();
@@ -221,13 +218,13 @@ void MainWindow::stopChecking() {
     checkLoader();
 }
 
-void MainWindow::execute() {
+void MainWindow::execute(const bool firstInput) {
     outHandler->clear();
     acOutputReady = userOutputReady = false;
     QString input = ui->customIn->toPlainText();
     netmgr->postCustomInput(judges[ui->judgeSelect->currentIndex()], ui->problemId->text(), input);
     ui->acOut->setPlainText("Accepted output\nis being fetched.");
-    codeEditor->execute(input, timeOutValue);
+    codeEditor->execute(input, timeOutValue, firstInput);
 }
 
 void MainWindow::selectProblemNotification() {
@@ -242,23 +239,24 @@ void MainWindow::on_checkIn_clicked() {
     ui->loadLabel->show();
     RIGCheckRunning = false;
     allCheckRunning = false;
-    execute();
+    execute(true);
 }
 
 void MainWindow::showChainChecker() {
     chainChecker->show();
     chainChecker->raise();
     chainChecker->setFocus();
+    chainChecker->showNormal();
 }
 
 void MainWindow::showRIGChecker() {
     rigChecker->show();
     rigChecker->raise();
     rigChecker->setFocus();
+    rigChecker->showNormal();
 }
 
 void MainWindow::checkAllStart() {
-    qDebug() << "START";
     ui->loadLabel->show();
     RIGCheckRunning = false;
     allCheckRunning = true;
@@ -290,7 +288,7 @@ void MainWindow::on_checkRIG_clicked() {
 
 void MainWindow::RIGInputReceived(const QByteArray& in) {
     ui->customIn->setPlainText(QString::fromLocal8Bit(in));
-    execute();
+    execute(chainIdx == 1);
 }
 
 void MainWindow::RIGStart() {
@@ -307,8 +305,7 @@ void MainWindow::executeNextInTable() {
     if (chainIdx <= ui->inputTable->rowCount()) {
         ui->customIn->setPlainText(ui->inputTable->requestInfo(chainIdx - 1));
         userOutputReady = acOutputReady = false;
-        qDebug() << "set to false";
-        execute();
+        execute(chainIdx == 1);
     }
     else {
        checkLoader();
@@ -318,7 +315,7 @@ void MainWindow::executeNextInTable() {
 
 void MainWindow::getRIGInput() {
     if (chainIdx <= rigChecker->getIterations())
-        rigChecker->fetchNextInput();
+        rigChecker->fetchNextInput(chainIdx == 1);
     else {
         checkLoader();
         outHandler->clear();
@@ -388,9 +385,12 @@ void MainWindow::reqHint(const QString& id) {
     netmgr->getHint(id);
 }
 
-void MainWindow::executionFailedReceived(bool crashed) {
-    if (crashed)
+void MainWindow::executionFailedReceived(const QByteArray& error, bool crashed) {
+    if (crashed) {
         outHandler->userProgCrashed();
+        QByteArray errorCopy = error;
+        QMessageBox::information(this, tr("Message"), tr(errorCopy));
+    }
     else
         outHandler->userProgTimedOut();
     if (allCheckRunning)
@@ -401,7 +401,8 @@ void MainWindow::executionFailedReceived(bool crashed) {
 void MainWindow::showCodeEditor() {
     codeEditor->show();
     codeEditor->raise();
-    codeEditor->activateWindow();
+    codeEditor->setFocus();
+    codeEditor->showNormal();
 }
 
 void MainWindow::loaderErrorReceived() {

@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[39];
-    char stringdata0[648];
+    QByteArrayData data[40];
+    char stringdata0[654];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -62,14 +62,15 @@ QT_MOC_LITERAL(27, 473, 6), // "output"
 QT_MOC_LITERAL(28, 480, 4), // "time"
 QT_MOC_LITERAL(29, 485, 16), // "acOutputReceived"
 QT_MOC_LITERAL(30, 502, 23), // "executionFailedReceived"
-QT_MOC_LITERAL(31, 526, 7), // "crashed"
-QT_MOC_LITERAL(32, 534, 19), // "loaderErrorReceived"
-QT_MOC_LITERAL(33, 554, 20), // "outputResultReceived"
-QT_MOC_LITERAL(34, 575, 7), // "success"
-QT_MOC_LITERAL(35, 583, 20), // "chainCheckTerminated"
-QT_MOC_LITERAL(36, 604, 14), // "showCodeEditor"
-QT_MOC_LITERAL(37, 619, 14), // "showRIGChecker"
-QT_MOC_LITERAL(38, 634, 13) // "checkAllStart"
+QT_MOC_LITERAL(31, 526, 5), // "error"
+QT_MOC_LITERAL(32, 532, 7), // "crashed"
+QT_MOC_LITERAL(33, 540, 19), // "loaderErrorReceived"
+QT_MOC_LITERAL(34, 560, 20), // "outputResultReceived"
+QT_MOC_LITERAL(35, 581, 7), // "success"
+QT_MOC_LITERAL(36, 589, 20), // "chainCheckTerminated"
+QT_MOC_LITERAL(37, 610, 14), // "showCodeEditor"
+QT_MOC_LITERAL(38, 625, 14), // "showRIGChecker"
+QT_MOC_LITERAL(39, 640, 13) // "checkAllStart"
 
     },
     "MainWindow\0inputsReceived\0\0"
@@ -87,7 +88,7 @@ QT_MOC_LITERAL(38, 634, 13) // "checkAllStart"
     "problemDescriptionReceived\0url\0"
     "userOutputReceived\0output\0time\0"
     "acOutputReceived\0executionFailedReceived\0"
-    "crashed\0loaderErrorReceived\0"
+    "error\0crashed\0loaderErrorReceived\0"
     "outputResultReceived\0success\0"
     "chainCheckTerminated\0showCodeEditor\0"
     "showRIGChecker\0checkAllStart"
@@ -131,13 +132,13 @@ static const uint qt_meta_data_MainWindow[] = {
       24,    1,  198,    2, 0x08 /* Private */,
       26,    2,  201,    2, 0x08 /* Private */,
       29,    1,  206,    2, 0x08 /* Private */,
-      30,    1,  209,    2, 0x08 /* Private */,
-      32,    0,  212,    2, 0x08 /* Private */,
-      33,    1,  213,    2, 0x08 /* Private */,
-      35,    0,  216,    2, 0x08 /* Private */,
-      36,    0,  217,    2, 0x08 /* Private */,
-      37,    0,  218,    2, 0x08 /* Private */,
-      38,    0,  219,    2, 0x08 /* Private */,
+      30,    2,  209,    2, 0x08 /* Private */,
+      33,    0,  214,    2, 0x08 /* Private */,
+      34,    1,  215,    2, 0x08 /* Private */,
+      36,    0,  218,    2, 0x08 /* Private */,
+      37,    0,  219,    2, 0x08 /* Private */,
+      38,    0,  220,    2, 0x08 /* Private */,
+      39,    0,  221,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void, QMetaType::QByteArray,    2,
@@ -163,9 +164,9 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void, QMetaType::QString,   25,
     QMetaType::Void, QMetaType::QByteArray, QMetaType::Int,   27,   28,
     QMetaType::Void, QMetaType::QByteArray,   27,
-    QMetaType::Void, QMetaType::Bool,   31,
+    QMetaType::Void, QMetaType::QByteArray, QMetaType::Bool,   31,   32,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Bool,   34,
+    QMetaType::Void, QMetaType::Bool,   35,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -203,7 +204,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 20: _t->problemDescriptionReceived((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         case 21: _t->userOutputReceived((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const int(*)>(_a[2]))); break;
         case 22: _t->acOutputReceived((*reinterpret_cast< const QByteArray(*)>(_a[1]))); break;
-        case 23: _t->executionFailedReceived((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 23: _t->executionFailedReceived((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2]))); break;
         case 24: _t->loaderErrorReceived(); break;
         case 25: _t->outputResultReceived((*reinterpret_cast< const bool(*)>(_a[1]))); break;
         case 26: _t->chainCheckTerminated(); break;

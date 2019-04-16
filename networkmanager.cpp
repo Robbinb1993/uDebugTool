@@ -18,11 +18,11 @@ NetworkManager::NetworkManager(QObject *parent) : QObject(parent),
     connect(curlGetHint, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(getHintFinished(int, QProcess::ExitStatus)));
     manager = new QNetworkAccessManager(this);
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(scrapingDone(QNetworkReply*)));
-}//constructor
+}
 
 NetworkManager::~NetworkManager() {
     clear();
-}//destructor
+}
 
 void NetworkManager::clear() {
     curlGetInputs->close();
@@ -30,13 +30,13 @@ void NetworkManager::clear() {
     curlGetTestcase->close();
     curlGetHints->close();
     curlGetHint->close();
-}//clear
+}
 
 void NetworkManager::scrape(const QString judgeName, const QString problemID) {
     QUrl url(QString("https://www.udebug.com/" + judgeName + QString("/") + problemID));
     QNetworkRequest req = QNetworkRequest(url);
     manager->get(req);
-}//scrape
+}
 
 void NetworkManager::scrapingDone(QNetworkReply* reply) {
     std::string html = reply->readAll().toStdString();
@@ -48,14 +48,14 @@ void NetworkManager::scrapingDone(QNetworkReply* reply) {
         while (html[pos] != '<' && pos < size_t(html.length()))
             probName += html[pos++];
         probNameReady(probName);
-    }//if
+    }
     needle = "type-of-problem\"> ";
     pos = html.find(needle);
     if (pos != std::string::npos)  {
         pos += (int)needle.size();
         if (html[pos] == 'M')
             multiOutputProblem();
-    }//if
+    }
     needle = "problem-statement-analysis-link";
     pos = html.find(needle);
     if (pos != std::string::npos)  {
@@ -67,12 +67,12 @@ void NetworkManager::scrapingDone(QNetworkReply* reply) {
             while (html[pos] != '\"' && pos < (size_t)html.length())
                 url += html[pos++];
             problemDescriptionReady(url);
-        }//if
-    }//if
+        }
+    }
     needle = "problem-flagged";
     if ((pos = html.find(needle)) != std::string::npos)
         QMessageBox::information(dynamic_cast<QWidget*>(this->parent()), tr("Message"), tr("This problem has been flagged and is under review. You can still use it though."));
-}//scrapingDone
+}
 
 void NetworkManager::searchInputs(const QString& judgeName, const QString& id) {
     curlGetInputs->close();
@@ -85,7 +85,7 @@ void NetworkManager::searchInputs(const QString& judgeName, const QString& id) {
     args.append("-H");
     args.append("authorization: " + auth);
     curlGetInputs->start(curlPath, args);
-}//searchInputs
+}
 
 void NetworkManager::searchHints(const QString& judgeName, const QString& id) {
     curlGetHints->close();
@@ -98,7 +98,7 @@ void NetworkManager::searchHints(const QString& judgeName, const QString& id) {
     args.append("-H");
     args.append("authorization: " + auth);
     curlGetHints->start(curlPath, args);
-}//searchInputs
+}
 
 void NetworkManager::getTestcase(const QString& id) {
     curlGetTestcase->close();
@@ -111,7 +111,7 @@ void NetworkManager::getTestcase(const QString& id) {
     args.append("-H");
     args.append("authorization: " + auth);
     curlGetTestcase->start(curlPath, args);
-}//getTestcase
+}
 
 void NetworkManager::getHint(const QString& id) {
     curlGetHint->close();
@@ -124,7 +124,7 @@ void NetworkManager::getHint(const QString& id) {
     args.append("-H");
     args.append("authorization: " + auth);
     curlGetHint->start(curlPath, args);
-}//getHint
+}
 
 void NetworkManager::postCustomInput(const QString& judgeName, const QString& id, const QString& testcase) {
     curlPostInput->close();
@@ -150,38 +150,37 @@ void NetworkManager::postCustomInput(const QString& judgeName, const QString& id
     args.append("-F");
     args.append("data=@" + inputFile + ";type=text/plain");
     curlPostInput->start(curlPath, args);
-}//postCustomInput
+}
 
 void NetworkManager::procError(QProcess::ProcessError error) {
     if (error == QProcess::ProcessError::FailedToStart)
         QMessageBox::information(dynamic_cast<QWidget*>(this->parent()), tr("Message"), tr("Curl could not be found. Make sure Curl is installed."));
-}//procError
+}
 
 void NetworkManager::inputPostError(QProcess::ProcessError error) {
-    qDebug() << error;
-}//inputPostError
+}
 
 void NetworkManager::getInputsFinished(int, QProcess::ExitStatus e) {
     if (e == QProcess::ExitStatus::NormalExit)
         inputsArrived(curlGetInputs->readAllStandardOutput());
-}//getInputsFinished
+}
 
 void NetworkManager::getHintsFinished(int, QProcess::ExitStatus e) {
     if (e == QProcess::ExitStatus::NormalExit)
         hintsArrived(curlGetHints->readAllStandardOutput());
-}//getHintsFinished
+}
 
 void NetworkManager::getAcOutputFinished(int, QProcess::ExitStatus e) {
     if (e == QProcess::ExitStatus::NormalExit)
         acOutputArrived(curlPostInput->readAllStandardOutput());
-}//getAcOutputFinished
+}
 
 void NetworkManager::getTestcaseFinished(int, QProcess::ExitStatus) {
     testcaseOutputArrived(curlGetTestcase->readAllStandardOutput());
-}//getTestcaseFinished
+}
 
 void NetworkManager::getHintFinished(int, QProcess::ExitStatus) {
     hintOutputArrived(curlGetHint->readAllStandardOutput());
-}//getHintFinished
+}
 
 

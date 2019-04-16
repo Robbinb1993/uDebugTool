@@ -59,7 +59,7 @@ private:
     void executeNextInTable();
     void getRIGInput();
     void checkLoader();
-    void execute();
+    void execute(const bool firstInput);
     void selectProblemNotification();
     void stopChecking();
     void showChainChecker();
@@ -87,7 +87,7 @@ private slots:
     void problemDescriptionReceived(const QString& url);
     void userOutputReceived(const QByteArray& output, const int time);
     void acOutputReceived(const QByteArray& output);
-    void executionFailedReceived(bool crashed);
+    void executionFailedReceived(const QByteArray& error, bool crashed);
     void loaderErrorReceived();
     void outputResultReceived(const bool success);
     void chainCheckTerminated();

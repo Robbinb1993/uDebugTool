@@ -27,23 +27,25 @@ class SourceCode : public QObject {
         void createCodeFile();
         void setCodeExtension(const QString& extension) {codeExtension = extension;}
         void setType(const SourceCodeType& t) {type = t;}
-        void runExecutable(const QString& input, int timeOutValue);
+        virtual void runExecutable(const QString& input, int timeOutValue);
         void terminateExecution();
+        void setTimer(const int timeOutValue);
         bool hasTerminated() {return terminated;}
         QString getWorkPath() {return workPath;}
         QString getExecutableFilePath() {return executableFilePath;}
         QString getCodeExtension() {return codeExtension;}
         QString getFlags() {return flags;}
+        QProcess* getExecuteProc() {return executeProc;}
     private:
         QString flags;
         QString code;
         QString workPath;
         QString codeExtension;
         QString executableFilePath;
-        QProcess *executeProc;
         SourceCodeType type;
         QTime timeMeasure;
         QTimer timer;
+        QProcess *executeProc;
         bool timedOut;
         bool terminated = 0;
     private slots:
@@ -53,7 +55,7 @@ class SourceCode : public QObject {
     signals:
         void outputArrived(const QByteArray& output, const int time);
         void loaderOutputArrived(int ret, const QByteArray& error, const QByteArray& output);
-        void executionFailed(bool crashed);
+        void executionFailed(const QByteArray& error, bool crashed);
 };
 
 class CompiledSourceCode : public SourceCode {
@@ -65,7 +67,7 @@ class CompiledSourceCode : public SourceCode {
         void execute(const QString& input, const int timeOutValue) override;
         void terminate() override;
     private:
-        void compile();        
+        void compile();
         QProcess *compileProc;
         bool compiled = false;
         QString inputBuffer;
@@ -78,6 +80,9 @@ class InterpretedSourceCode : public SourceCode {
     Q_OBJECT
     public:
         InterpretedSourceCode(QObject* parent) : SourceCode(parent) {setType(Interpreted);}
+        void execute(const QString& input, const int timeOutValue) override;
+    private:
+        void runExecutable(const QString& input, int timeOutValue) override;
 };
 
 class SourceCodeCType : public CompiledSourceCode {
@@ -95,7 +100,7 @@ class SourceCodeJava : public CompiledSourceCode {
 class SourceCodePython : public InterpretedSourceCode {
     Q_OBJECT
     public:
-        explicit SourceCodePython(QObject* parent) : InterpretedSourceCode(parent) {}
+        explicit SourceCodePython(QObject* parent) : InterpretedSourceCode(parent) {setCodeExtension(".py");}
 };
 
 

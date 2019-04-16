@@ -14,7 +14,7 @@ class RIGChecker : public QDialog
 
 public:
     explicit RIGChecker(QWidget *parent = 0);
-    void fetchNextInput();
+    void fetchNextInput(const bool firstInput);
     int getIterations();
     void clear();
     void terminate();
@@ -24,13 +24,14 @@ private slots:
     void on_iterationsLine_editingFinished();
     void setRIG();
     void on_check_clicked();
-    void executionFailedReceived(bool crashed);
+    void executionFailedReceived(const QByteArray&, bool crashed);
     void RIGOutputReceived(const QByteArray& output, const int&);
     void loaderErrorReceived();
 private:
     Ui::RIGChecker *ui;
     CodeEditor* codeEditor;
     int iterations;
+    void showCodeEditor();
 signals:
     void RIGCrash();
     void sendInput(const QByteArray& in);

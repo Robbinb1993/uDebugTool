@@ -13,7 +13,7 @@ RIGChecker::RIGChecker(QWidget *parent) :
 
     codeEditor = new CodeEditor("rig", "Random Input Generator Loader", parent);
     connect(codeEditor, SIGNAL(outputReady(const QByteArray&, const int)), this, SLOT(RIGOutputReceived(const QByteArray&, const int)));
-    connect(codeEditor, SIGNAL(executionFailed(bool)), this, SLOT(executionFailedReceived(bool)));
+    connect(codeEditor, SIGNAL(executionFailed(const QByteArray&, bool)), this, SLOT(executionFailedReceived(const QByteArray&, bool)));
     connect(codeEditor, SIGNAL(loaderErrorArrived()), this, SLOT(loaderErrorReceived()));
 
     iterations = 1;
@@ -35,7 +35,7 @@ void RIGChecker::RIGOutputReceived(const QByteArray& output, const int&) {
     sendInput(output);
 }
 
-void RIGChecker::executionFailedReceived(bool crashed) {
+void RIGChecker::executionFailedReceived(const QByteArray& error, bool crashed) {
     if (crashed)
         QMessageBox::information(this, tr("Message"), tr("The random input generator has crashed."));
     else
@@ -43,10 +43,16 @@ void RIGChecker::executionFailedReceived(bool crashed) {
     terminateRIG();
 }
 
-void RIGChecker::loaderErrorReceived() {
-    hide();
+void RIGChecker::showCodeEditor() {
     codeEditor->show();
     codeEditor->raise();
+    codeEditor->activateWindow();
+    codeEditor->showNormal();
+}
+
+void RIGChecker::loaderErrorReceived() {
+    hide();
+    showCodeEditor();
 }
 
 void RIGChecker::clear() {
@@ -58,10 +64,7 @@ int RIGChecker::getIterations() {
 }
 
 void RIGChecker::on_loadRIG_clicked() {
-    if (!codeEditor->isVisible())
-        codeEditor->show();
-    codeEditor->raise();
-    codeEditor->activateWindow();
+    showCodeEditor();
 }
 
 void RIGChecker::on_iterationsLine_editingFinished() {
@@ -85,8 +88,7 @@ void RIGChecker::on_check_clicked() {
     RIGCheckStart();
 }
 
-void RIGChecker::fetchNextInput() {
-    codeEditor->execute("", 10000);
-    qDebug() << "FETCH";
+void RIGChecker::fetchNextInput(const bool firstInput) {
+    codeEditor->execute("", 10000, firstInput);
 }
 

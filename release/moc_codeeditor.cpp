@@ -37,28 +37,28 @@ QT_MOC_LITERAL(2, 23, 0), // ""
 QT_MOC_LITERAL(3, 24, 6), // "output"
 QT_MOC_LITERAL(4, 31, 4), // "time"
 QT_MOC_LITERAL(5, 36, 15), // "executionFailed"
-QT_MOC_LITERAL(6, 52, 7), // "crashed"
-QT_MOC_LITERAL(7, 60, 18), // "loaderErrorArrived"
-QT_MOC_LITERAL(8, 79, 23), // "on_loaderButton_clicked"
-QT_MOC_LITERAL(9, 103, 27), // "on_submitCodeButton_clicked"
-QT_MOC_LITERAL(10, 131, 37), // "on_languageSelect_currentInde..."
-QT_MOC_LITERAL(11, 169, 4), // "arg1"
-QT_MOC_LITERAL(12, 174, 27), // "on_flagLine_editingFinished"
-QT_MOC_LITERAL(13, 202, 20), // "loaderOutputReceived"
-QT_MOC_LITERAL(14, 223, 3), // "ret"
-QT_MOC_LITERAL(15, 227, 5), // "error"
+QT_MOC_LITERAL(6, 52, 5), // "error"
+QT_MOC_LITERAL(7, 58, 7), // "crashed"
+QT_MOC_LITERAL(8, 66, 18), // "loaderErrorArrived"
+QT_MOC_LITERAL(9, 85, 23), // "on_loaderButton_clicked"
+QT_MOC_LITERAL(10, 109, 27), // "on_submitCodeButton_clicked"
+QT_MOC_LITERAL(11, 137, 37), // "on_languageSelect_currentInde..."
+QT_MOC_LITERAL(12, 175, 4), // "arg1"
+QT_MOC_LITERAL(13, 180, 27), // "on_flagLine_editingFinished"
+QT_MOC_LITERAL(14, 208, 20), // "loaderOutputReceived"
+QT_MOC_LITERAL(15, 229, 3), // "ret"
 QT_MOC_LITERAL(16, 233, 14), // "outputReceived"
 QT_MOC_LITERAL(17, 248, 20) // "executionFailArrived"
 
     },
     "CodeEditor\0outputReady\0\0output\0time\0"
-    "executionFailed\0crashed\0loaderErrorArrived\0"
-    "on_loaderButton_clicked\0"
+    "executionFailed\0error\0crashed\0"
+    "loaderErrorArrived\0on_loaderButton_clicked\0"
     "on_submitCodeButton_clicked\0"
     "on_languageSelect_currentIndexChanged\0"
     "arg1\0on_flagLine_editingFinished\0"
-    "loaderOutputReceived\0ret\0error\0"
-    "outputReceived\0executionFailArrived"
+    "loaderOutputReceived\0ret\0outputReceived\0"
+    "executionFailArrived"
 };
 #undef QT_MOC_LITERAL
 
@@ -77,31 +77,31 @@ static const uint qt_meta_data_CodeEditor[] = {
 
  // signals: name, argc, parameters, tag, flags
        1,    2,   64,    2, 0x06 /* Public */,
-       5,    1,   69,    2, 0x06 /* Public */,
-       7,    0,   72,    2, 0x06 /* Public */,
+       5,    2,   69,    2, 0x06 /* Public */,
+       8,    0,   74,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       8,    0,   73,    2, 0x08 /* Private */,
-       9,    0,   74,    2, 0x08 /* Private */,
-      10,    1,   75,    2, 0x08 /* Private */,
-      12,    0,   78,    2, 0x08 /* Private */,
-      13,    3,   79,    2, 0x08 /* Private */,
-      16,    2,   86,    2, 0x08 /* Private */,
-      17,    1,   91,    2, 0x08 /* Private */,
+       9,    0,   75,    2, 0x08 /* Private */,
+      10,    0,   76,    2, 0x08 /* Private */,
+      11,    1,   77,    2, 0x08 /* Private */,
+      13,    0,   80,    2, 0x08 /* Private */,
+      14,    3,   81,    2, 0x08 /* Private */,
+      16,    2,   88,    2, 0x08 /* Private */,
+      17,    2,   93,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QByteArray, QMetaType::Int,    3,    4,
-    QMetaType::Void, QMetaType::Bool,    6,
+    QMetaType::Void, QMetaType::QByteArray, QMetaType::Bool,    6,    7,
     QMetaType::Void,
 
  // slots: parameters
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString,   11,
+    QMetaType::Void, QMetaType::QString,   12,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int, QMetaType::QByteArray, QMetaType::QByteArray,   14,   15,    3,
+    QMetaType::Void, QMetaType::Int, QMetaType::QByteArray, QMetaType::QByteArray,   15,    6,    3,
     QMetaType::Void, QMetaType::QByteArray, QMetaType::Int,    3,    4,
-    QMetaType::Void, QMetaType::Bool,    6,
+    QMetaType::Void, QMetaType::QByteArray, QMetaType::Bool,    6,    7,
 
        0        // eod
 };
@@ -113,7 +113,7 @@ void CodeEditor::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->outputReady((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const int(*)>(_a[2]))); break;
-        case 1: _t->executionFailed((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 1: _t->executionFailed((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2]))); break;
         case 2: _t->loaderErrorArrived(); break;
         case 3: _t->on_loaderButton_clicked(); break;
         case 4: _t->on_submitCodeButton_clicked(); break;
@@ -121,7 +121,7 @@ void CodeEditor::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 6: _t->on_flagLine_editingFinished(); break;
         case 7: _t->loaderOutputReceived((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< const QByteArray(*)>(_a[2])),(*reinterpret_cast< const QByteArray(*)>(_a[3]))); break;
         case 8: _t->outputReceived((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const int(*)>(_a[2]))); break;
-        case 9: _t->executionFailArrived((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 9: _t->executionFailArrived((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -134,7 +134,7 @@ void CodeEditor::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
             }
         }
         {
-            typedef void (CodeEditor::*_t)(bool );
+            typedef void (CodeEditor::*_t)(const QByteArray & , bool );
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&CodeEditor::executionFailed)) {
                 *result = 1;
                 return;
@@ -194,9 +194,9 @@ void CodeEditor::outputReady(const QByteArray & _t1, const int _t2)
 }
 
 // SIGNAL 1
-void CodeEditor::executionFailed(bool _t1)
+void CodeEditor::executionFailed(const QByteArray & _t1, bool _t2)
 {
-    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);
 }
 

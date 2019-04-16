@@ -24,7 +24,7 @@ class CodeEditor : public QDialog
 public:
     explicit CodeEditor(const QString d, const QString windowName, QWidget *parent = nullptr);
     ~CodeEditor();
-    void execute(const QString& input, const int timeOutValue);
+    void execute(const QString& input, const int timeOutValue, const bool firstInput);
     void terminate();
 private slots:
     void on_loaderButton_clicked();
@@ -33,7 +33,7 @@ private slots:
     void on_flagLine_editingFinished();
     void loaderOutputReceived(int ret, const QByteArray& error, const QByteArray& output);
     void outputReceived(const QByteArray& output, const int time) {outputReady(output, time);}
-    void executionFailArrived(bool crashed) {executionFailed(crashed);}
+    void executionFailArrived(const QByteArray& error, bool crashed) {executionFailed(error, crashed);}
 private:
     Ui::CodeEditor *ui;
     SourceCode *sourcecode;
@@ -41,7 +41,7 @@ private:
     void setSourcecode(const QString& langName);
 signals:
     void outputReady(const QByteArray& output, const int time);
-    void executionFailed(bool crashed);
+    void executionFailed(const QByteArray& error, bool crashed);
     void loaderErrorArrived();
 };
 

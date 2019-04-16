@@ -22,7 +22,7 @@ bool InputChainChecker::eventFilter(QObject *, QEvent* e) {
     else if (e->type() == QEvent::Type::Show)
         ui->closeButton->hide();
     return false;
-}//eventFilter
+}
 
 void InputChainChecker::progress(const int idx, const int tot) {
     ui->progressBar->setValue((tot == 0 ? 100 : int(idx / double(tot) * 100)));
@@ -30,15 +30,15 @@ void InputChainChecker::progress(const int idx, const int tot) {
     if (idx == tot) {
         txt.append("Output is correct for all inputs.");
         ui->closeButton->show();
-    }//if
+    }
     else {
         txt.append(std::to_string(idx).c_str());
         txt.append(" of ");
         txt.append(std::to_string(tot).c_str());
         txt.append(" inputs have been checked.");
-    }//else
+    }
     ui->info->setText(txt);
-}//progress
+}
 
 void InputChainChecker::mismatchFound(const int idx) {
     ui->progressBar->setValue(0);
@@ -48,9 +48,9 @@ void InputChainChecker::mismatchFound(const int idx) {
     txt.append(".");
     ui->info->setText(txt);
     ui->closeButton->show();
-}//mismatchFound
+}
 
 void InputChainChecker::on_closeButton_clicked() {
     close();
     windowClosed();
-}//on_closeButton_clicked
+}

@@ -19,8 +19,8 @@ QObject(parent), acOut(ac), userOut(user), resultLine(line) {
     white.setBackground(QBrush(QColor(255, 255, 255)));
 }
 
-void OutputHandler::setExecutionTime(const int t) {
-    executionTime = t;
+void OutputHandler::setExecutionTime(const int time) {
+    executionTime = time;
 }
 
 void OutputHandler::clear() {
@@ -56,11 +56,12 @@ void OutputHandler::acOutputReceived(const QByteArray& result) {
 
 void OutputHandler::userProgTimedOut() {
     userOut->setPlainText("User program has timed out.");
+    acOut->clear();
     comparisonFinished();
 }
 
 void OutputHandler::userProgCrashed() {
-    userOut->setPlainText("A runtime error occured.");
+    acOut->clear();
     comparisonFinished();
 }
 
