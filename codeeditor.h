@@ -33,7 +33,7 @@ private slots:
     void on_flagLine_editingFinished();
     void loaderOutputReceived(int ret, const QByteArray& error, const QByteArray& output);
     void outputReceived(const QByteArray& output, const int time) {outputReady(output, time);}
-    void executionFailArrived(const QByteArray& error, bool crashed) {executionFailed(error, crashed);}
+    void executionFailArrived(const QByteArray& error, bool crashed);
 private:
     Ui::CodeEditor *ui;
     SourceCode *sourcecode;

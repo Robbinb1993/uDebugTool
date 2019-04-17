@@ -77,6 +77,11 @@ void CodeEditor::execute(const QString& input, const int timeOutValue, const boo
     sourcecode->execute(input, timeOutValue);
 }
 
+void CodeEditor::executionFailArrived(const QByteArray& error, bool crashed) {
+    executionFailed(error, crashed);
+    ui->loaderOutput->setPlainText(error);
+}
+
 void CodeEditor::loaderOutputReceived(int ret, const QByteArray& error, const QByteArray& output) {
     if (ret != 0) {
         ui->loaderOutput->setPlainText("Compiler error:\n" + error + "\n" + output);

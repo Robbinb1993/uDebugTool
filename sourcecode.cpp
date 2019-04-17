@@ -6,8 +6,8 @@
 #include <QDebug>
 
 SourceCode::SourceCode(QObject *parent) : QObject(parent) {
-    QString executableDirectoryPath = QDir::currentPath() + "/executables";
-    executableFilePath = executableDirectoryPath + "/a";
+    executableDirectoryPath = QDir::currentPath() + "/executables";
+    setCodeFileName("a");
     executeProc = new QProcess(this);
     connect(executeProc, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(executeProcFinished(int, QProcess::ExitStatus)));
     connect(executeProc, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(executeProcError(QProcess::ProcessError)));
@@ -15,6 +15,7 @@ SourceCode::SourceCode(QObject *parent) : QObject(parent) {
 }
 
 void SourceCode::executeProcFinished(int ret, QProcess::ExitStatus status) {
+    qDebug() << status;
     if (!ret)
         outputArrived(executeProc->readAllStandardOutput(), timeMeasure.elapsed());
     else
@@ -46,8 +47,7 @@ void SourceCode::addFlagsToList(QStringList& compileList) {
 }
 
 void SourceCode::createCodeFile() {
-    QFile file;
-    file.setFileName(executableFilePath + codeExtension);
+    QFile file(getCodePath());
     if (file.exists())
         file.remove();
     if (file.open(QIODevice::ReadWrite)) {
@@ -76,10 +76,10 @@ void SourceCode::setTimer(const int timeOutValue) {
     timer.start(timeOutValue);
 }
 
-void SourceCode::runExecutable(const QString &input, const int timeOutValue) {
-    executeProc->start(executableFilePath);
-    executeProc->write(input.toStdString().c_str());
-    executeProc->closeWriteChannel();
+void CompiledSourceCode::runExecutable(const QString &input, const int timeOutValue) {
+    getExecuteProc()->start(getExecutablePath());
+    getExecuteProc()->write(input.toStdString().c_str());
+    getExecuteProc()->closeWriteChannel();
     setTimer(timeOutValue);
 }
 
@@ -91,12 +91,11 @@ void SourceCode::terminateExecution() {
 CompiledSourceCode::CompiledSourceCode(QObject *parent) : SourceCode(parent) {
     setType(Compiled);
     compileProc = new QProcess(parent);
-    compileProc->setWorkingDirectory(QDir::currentPath() + QString("/executables"));
+    compileProc->setWorkingDirectory(getExecutableDirectoryPath());
     connect(compileProc, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(compileProcFinished(int, QProcess::ExitStatus)));
 }
 
 void CompiledSourceCode::compileProcFinished(int exit, QProcess::ExitStatus) {
-    qDebug() << "COMPILED";
     if (!hasTerminated())
         loaderOutputArrived(exit, compileProc->readAllStandardError(), compileProc->readAllStandardOutput());
     if (exit == 0) {
@@ -111,7 +110,7 @@ void CompiledSourceCode::compile() {
     QStringList compileList;
     addFlagsToList(compileList);
     createCodeFile();
-    compileList << QString(getExecutableFilePath() + getCodeExtension());
+    compileList << QString(getCodePath());
     compileProc->start(getWorkPath(), compileList);
     compileProc->closeWriteChannel();
 }
@@ -124,7 +123,6 @@ void CompiledSourceCode::terminate() {
 void CompiledSourceCode::set(QString const& newCode) {
     compiled = false;
     SourceCode::set(newCode);
-    inputBuffer.clear();
 }
 
 void CompiledSourceCode::execute(const QString& input, const int timeOutValue) {
@@ -133,8 +131,9 @@ void CompiledSourceCode::execute(const QString& input, const int timeOutValue) {
         timeOutValueBuffer = timeOutValue;
         compile();
     }
-    else
+    else {
         runExecutable(input, timeOutValue);
+    }
 }
 
 SourceCodeCType::SourceCodeCType(QObject* parent, const QString& type) : CompiledSourceCode(parent) {
@@ -149,13 +148,70 @@ SourceCodeCType::SourceCodeCType(QObject* parent, const QString& type) : Compile
     }
 }
 
-void InterpretedSourceCode::runExecutable(const QString& input, const int timeOutValue) {
+SourceCodeJava::SourceCodeJava(QObject* parent) : CompiledSourceCode(parent) {
+    setExecuterName("java");
+    setCodeExtension(".java");
+    parserLocation = QDir::currentPath() + "/javaparse/javaparse.jar";
+    javaParser = new QProcess(this);
+    connect(javaParser, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(javaParsingFinished(int, QProcess::ExitStatus)));
+    connect(javaParser, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(javaParsingError(QProcess::ProcessError)));
+}
+
+void SourceCodeJava::javaParsingFinished(int ret, QProcess::ExitStatus) {
+    if (ret == 0) {
+        QTextStream parseStream(javaParser->readAllStandardOutput());
+        QString newCode = parseStream.readLine();
+        set(newCode);
+        QString codeFileName;
+        parseStream >> codeFileName;
+        setCodeFileName(codeFileName);
+        compileAfterPreprocess();
+    }
+    else
+        loaderOutputArrived(ret, javaParser->readAllStandardError(), javaParser->readAllStandardOutput());
+}
+
+void SourceCodeJava::javaParsingError(QProcess::ProcessError error) {
+    qDebug() << "Java parser error occured." << error;
+}
+
+void SourceCodeJava::parseJavaCode() {
+    QStringList list;
+    list << "-jar";
+    list << getParserLocation();
+    list << getCode();
+    javaParser->start("java", list);
+    javaParser->closeWriteChannel();
+}
+
+void SourceCodeJava::compile() {
+    parseJavaCode();
+}
+
+void SourceCodeJava::compileAfterPreprocess() {
+    CompiledSourceCode::compile();
+}
+
+void SourceCodeJava::runExecutable(const QString& input, const int timeOutValue) {
     getExecuteProc()->close();
-    QStringList interpreteList;
-    addFlagsToList(interpreteList);
+    QStringList compileList;
+    compileList << "-cp";
+    compileList << getExecutableDirectoryPath();
+    compileList << getCodeFileName();
+    getExecuteProc()->start("java", compileList);
+    qDebug() << input;
+    getExecuteProc()->write(input.toStdString().c_str());
+    getExecuteProc()->closeWriteChannel();
+    setTimer(timeOutValue);
+}
+
+void InterpretedSourceCode::runExecutable(const QString& input, const int timeOutValue) {    
+    getExecuteProc()->close();
+    QStringList interpretList;
+    addFlagsToList(interpretList);
     createCodeFile();
-    interpreteList << QString(getExecutableFilePath() + getCodeExtension());
-    getExecuteProc()->start(getWorkPath(), interpreteList);
+    interpretList << getCodePath();
+    getExecuteProc()->start(getWorkPath(), interpretList);
     getExecuteProc()->write(input.toStdString().c_str());
     getExecuteProc()->closeWriteChannel();
     setTimer(timeOutValue);

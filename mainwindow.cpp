@@ -25,7 +25,7 @@ void MainWindow::setLayout() {
     ui->loadLabel->hide();
 
     ui->probNameLabel->setOpenExternalLinks(true);
-}//setLayout
+}
 
 void MainWindow::setTimeout() {
     QSettings settings("config.ini", QSettings::IniFormat);
@@ -35,11 +35,11 @@ void MainWindow::setTimeout() {
     if (timeOutValue >= 100000) { //display in seconds
         txt.append(std::to_string(timeOutValue / 1000).c_str());
         txt.append(" s");
-    }//if
+    }
     else { //display in milliseconds
         txt.append(std::to_string(timeOutValue).c_str());
         txt.append(" ms");
-    }//else
+    }
     ui->timeLimitIn->setText(txt);
 }
 
@@ -102,13 +102,12 @@ MainWindow::MainWindow(QWidget *parent) :
     raise();
 }
 
-//EVENTS
 bool MainWindow::eventFilter(QObject *, QEvent *event) {    
     if (event && event->type() == QEvent::WindowActivate) {
         codeEditor->hide();
         rigChecker->hide();
         return true;
-    }//if
+    }
     return false;
 }
 
@@ -126,7 +125,7 @@ void MainWindow::inputsReceived(const QByteArray& result) {
         QMessageBox::information(this, tr("Message"), tr(message.toUtf8()));
         problemReady = true;
         inputFetchingFinished();
-    }//if
+    }
     else
         ui->inputTable->addEntries(result);
 }
@@ -274,7 +273,7 @@ void MainWindow::on_checkAll_clicked() {
     if (!ui->inputTable->isReady()) {
         QMessageBox::information(this, tr("Message"), tr("Please wait until all test cases have been fetched."));
         return;
-    }//if
+    }
     checkAllTimer->start(250);
 }
 
@@ -385,11 +384,10 @@ void MainWindow::reqHint(const QString& id) {
     netmgr->getHint(id);
 }
 
-void MainWindow::executionFailedReceived(const QByteArray& error, bool crashed) {
+void MainWindow::executionFailedReceived(const QByteArray&, bool crashed) {
     if (crashed) {
         outHandler->userProgCrashed();
-        QByteArray errorCopy = error;
-        QMessageBox::information(this, tr("Message"), tr(errorCopy));
+        showCodeEditor();
     }
     else
         outHandler->userProgTimedOut();

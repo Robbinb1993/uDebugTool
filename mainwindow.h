@@ -52,6 +52,7 @@ private:
     bool procTerminate, allCheckRunning = 0, RIGCheckRunning = 0;
     int timeOutValue;
     int chainIdx;
+    QByteArray errorCopy;
 
     void setLayout();
     void setTimeout();

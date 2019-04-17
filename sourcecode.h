@@ -27,21 +27,27 @@ class SourceCode : public QObject {
         void createCodeFile();
         void setCodeExtension(const QString& extension) {codeExtension = extension;}
         void setType(const SourceCodeType& t) {type = t;}
-        virtual void runExecutable(const QString& input, int timeOutValue);
         void terminateExecution();
         void setTimer(const int timeOutValue);
+        void setCodeFileName(const QString& name) {codeFileName = name;}
         bool hasTerminated() {return terminated;}
+        virtual void runExecutable(const QString&, int) {}
         QString getWorkPath() {return workPath;}
-        QString getExecutableFilePath() {return executableFilePath;}
+        QString getExecutableDirectoryPath() {return executableDirectoryPath;}
+        QString getExecutablePath() {return getExecutableDirectoryPath() + "/" + getCodeFileName();}
+        QString getCodePath() {return getExecutablePath() + getCodeExtension();}
         QString getCodeExtension() {return codeExtension;}
+        QString getCodeFileName() {return codeFileName;}
         QString getFlags() {return flags;}
+        QString getCode() {return code;}
         QProcess* getExecuteProc() {return executeProc;}
     private:
         QString flags;
         QString code;
         QString workPath;
         QString codeExtension;
-        QString executableFilePath;
+        QString executableDirectoryPath;
+        QString codeFileName;
         SourceCodeType type;
         QTime timeMeasure;
         QTimer timer;
@@ -66,12 +72,17 @@ class CompiledSourceCode : public SourceCode {
         void set(const QString &newCode) override;
         void execute(const QString& input, const int timeOutValue) override;
         void terminate() override;
-    private:
-        void compile();
+    protected:
+        void setExecuterName(const QString& name) {executerName = name;}
+        virtual void compile();
+    private:        
         QProcess *compileProc;
         bool compiled = false;
         QString inputBuffer;
+        QString executerName;
         int timeOutValueBuffer;
+        virtual void runExecutable(const QString& input, int timeOutValue) override;
+        QString getExecuterName() {return executerName;}
     private slots:
         void compileProcFinished(int, QProcess::ExitStatus);
 };
@@ -94,7 +105,19 @@ class SourceCodeCType : public CompiledSourceCode {
 class SourceCodeJava : public CompiledSourceCode {
     Q_OBJECT
     public:
-        explicit SourceCodeJava(QObject* parent) : CompiledSourceCode(parent) {}
+        explicit SourceCodeJava(QObject* parent);
+    private:
+        void compile() override;
+        void compileAfterPreprocess();
+        void runExecutable(const QString& input, int timeOutValue) override;
+        void parseJavaCode();
+        QString getParserLocation() {return parserLocation;}
+        QProcess* javaParser;
+        QString parserLocation;
+    private slots:
+        void javaParsingFinished(int, QProcess::ExitStatus);
+        void javaParsingError(QProcess::ProcessError);
+
 };
 
 class SourceCodePython : public InterpretedSourceCode {
