@@ -222,7 +222,8 @@ void MainWindow::execute(const bool firstInput) {
     acOutputReady = userOutputReady = false;
     QString input = ui->customIn->toPlainText();
     netmgr->postCustomInput(judges[ui->judgeSelect->currentIndex()], ui->problemId->text(), input);
-    ui->acOut->setPlainText("Accepted output\nis being fetched.");
+    ui->acOut->setPlainText("Accepted output is being fetched.");
+    ui->userOut->setPlainText("Your output is being calculated.");
     codeEditor->execute(input, timeOutValue, firstInput);
 }
 
