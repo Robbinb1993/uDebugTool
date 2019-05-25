@@ -5,8 +5,9 @@
 #include <QProcess>
 #include <QObject>
 #include <QQueue>
-#include <QTime>
+#include <QElapsedTimer>
 #include <QTimer>
+#include <QDir>
 
 enum SourceCodeType {Compiled, Interpreted};
 
@@ -18,8 +19,9 @@ class SourceCode : public QObject {
         virtual void execute(const QString&, const int) {}
         virtual void set(const QString& newCode) {code = newCode; terminated = false;}
         void setPath(const QString& newPath) {workPath = newPath;}
-        void setFlags(const QString& newFlags) {flags = newFlags;}
+        void setFlags(const QString& newFlags) {flags = newFlags;}        
         virtual void terminate();
+        virtual void setWorkDir(const QString& workDir) {executableDirectoryPath = QDir::currentPath() + "/" + workDir;}
         QString getLanguageType();
         QString getLoaderType();
     protected:
@@ -49,7 +51,7 @@ class SourceCode : public QObject {
         QString executableDirectoryPath;
         QString codeFileName;
         SourceCodeType type;
-        QTime timeMeasure;
+        QElapsedTimer timeMeasure;
         QTimer timer;
         QProcess *executeProc;
         bool timedOut;
@@ -59,7 +61,7 @@ class SourceCode : public QObject {
         void executeProcError(QProcess::ProcessError);
         void procTimedOut();
     signals:
-        void outputArrived(const QByteArray& output, const int time);
+        void outputArrived(const QByteArray& output, const qint64 time);
         void loaderOutputArrived(int ret, const QByteArray& error, const QByteArray& output);
         void executionFailed(const QByteArray& error, bool crashed);
 };
@@ -72,6 +74,7 @@ class CompiledSourceCode : public SourceCode {
         void set(const QString &newCode) override;
         void execute(const QString& input, const int timeOutValue) override;
         void terminate() override;
+        virtual void setWorkDir(const QString& workDir) override;
     protected:
         void setExecuterName(const QString& name) {executerName = name;}
         virtual void compile();

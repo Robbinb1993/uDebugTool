@@ -90,7 +90,7 @@ static const uint qt_meta_data_CodeEditor[] = {
       17,    2,   93,    2, 0x08 /* Private */,
 
  // signals: parameters
-    QMetaType::Void, QMetaType::QByteArray, QMetaType::Int,    3,    4,
+    QMetaType::Void, QMetaType::QByteArray, QMetaType::LongLong,    3,    4,
     QMetaType::Void, QMetaType::QByteArray, QMetaType::Bool,    6,    7,
     QMetaType::Void,
 
@@ -100,7 +100,7 @@ static const uint qt_meta_data_CodeEditor[] = {
     QMetaType::Void, QMetaType::QString,   12,
     QMetaType::Void,
     QMetaType::Void, QMetaType::Int, QMetaType::QByteArray, QMetaType::QByteArray,   15,    6,    3,
-    QMetaType::Void, QMetaType::QByteArray, QMetaType::Int,    3,    4,
+    QMetaType::Void, QMetaType::QByteArray, QMetaType::LongLong,    3,    4,
     QMetaType::Void, QMetaType::QByteArray, QMetaType::Bool,    6,    7,
 
        0        // eod
@@ -112,7 +112,7 @@ void CodeEditor::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         CodeEditor *_t = static_cast<CodeEditor *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->outputReady((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const int(*)>(_a[2]))); break;
+        case 0: _t->outputReady((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const qint64(*)>(_a[2]))); break;
         case 1: _t->executionFailed((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2]))); break;
         case 2: _t->loaderErrorArrived(); break;
         case 3: _t->on_loaderButton_clicked(); break;
@@ -120,14 +120,14 @@ void CodeEditor::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 5: _t->on_languageSelect_currentIndexChanged((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         case 6: _t->on_flagLine_editingFinished(); break;
         case 7: _t->loaderOutputReceived((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< const QByteArray(*)>(_a[2])),(*reinterpret_cast< const QByteArray(*)>(_a[3]))); break;
-        case 8: _t->outputReceived((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const int(*)>(_a[2]))); break;
+        case 8: _t->outputReceived((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const qint64(*)>(_a[2]))); break;
         case 9: _t->executionFailArrived((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
         {
-            typedef void (CodeEditor::*_t)(const QByteArray & , const int );
+            typedef void (CodeEditor::*_t)(const QByteArray & , const qint64 );
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&CodeEditor::outputReady)) {
                 *result = 0;
                 return;
@@ -187,7 +187,7 @@ int CodeEditor::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void CodeEditor::outputReady(const QByteArray & _t1, const int _t2)
+void CodeEditor::outputReady(const QByteArray & _t1, const qint64 _t2)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);

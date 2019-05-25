@@ -12,7 +12,7 @@ void CodeEditor::setLayout() {
     ui->codeEditor->document()->setDefaultTextOption(option);
 }
 
-CodeEditor::CodeEditor(const QString d, const QString windowName, QWidget *parent) :
+CodeEditor::CodeEditor(const QString d, const QString windowName, const QString workDir, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::CodeEditor)
     {
@@ -23,6 +23,8 @@ CodeEditor::CodeEditor(const QString d, const QString windowName, QWidget *paren
 
     setWindowTitle(windowName);
     setLayout();
+
+    workDirectory = workDir;
 
     new SyntaxHighlighter(ui->codeEditor->document());
 
@@ -58,12 +60,13 @@ void CodeEditor::setSourcecode(const QString& langName) {
     else
         sourcecode = new SourceCode(this);
 
-    connect(sourcecode, SIGNAL(outputArrived(const QByteArray&, const int)), this, SLOT(outputReceived(const QByteArray&, const int)));
+    connect(sourcecode, SIGNAL(outputArrived(const QByteArray&, const qint64)), this, SLOT(outputReceived(const QByteArray&, const qint64)));
     connect(sourcecode, SIGNAL(loaderOutputArrived(int, const QByteArray&, const QByteArray&)), this, SLOT(loaderOutputReceived(int, const QByteArray&, const QByteArray&)));
     connect(sourcecode, SIGNAL(executionFailed(const QByteArray&, bool)), this, SLOT(executionFailArrived(const QByteArray&, bool)));
 
     sourcecode->setFlags(flags);
     sourcecode->setPath(path);
+    sourcecode->setWorkDir(workDirectory);
 
     ui->loaderButton->setText("Load " + sourcecode->getLoaderType());
     QString loaderLabelText = sourcecode->getLoaderType() + " output";

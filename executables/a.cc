@@ -1,90 +1,101 @@
-/*
- * UVA Problem ID: 11057 (Exact Sum)
- *
- * Input:
- *  + The input consists of multiple test cases.
- *  + Each test case starts with 2 <= N <= 10000, the number of available books.
- *  + Next line will have N integers, representing the price of each book, a book costs less than
- *          1000001.
- *  + Then there is another line with an integer M, representing how much money Peter has.
- *  + There is a blank line after each test case.
- *  + The input is terminated by end of file (EOF).
- *
- * Output:
- *  + For each test case, print the message: "Peter should buy books whose prices are i and j.",
- *    where i and j are the prices of the books whose sum is equal do M and i <= j.
- *  + Assumption: there is always possible to find a solution.
- *         If there are multiple solutions print the solution that minimizes the difference
- *         between the prices i and j.
- *  + After each test case you must print a blank line.
- */
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <utility>
-
+#include <bits/stdc++.h>
 using namespace std;
-
-pair<int, int> findExactSum(vector<int> & , int);
-
-int main()
-{
-    int numBook, totalMoney;
-    while(cin >> numBook)
-    {
-        vector<int> bookPrice(numBook);
-
-        for(int index = 0; index < numBook; index++)
-            cin >> bookPrice[index];
-
-        cin >> totalMoney;
-
-        pair<int, int> optimalPair = findExactSum(bookPrice, totalMoney);
-
-        cout << "Peter should buy books whose prices are " << optimalPair.first << " and "
-                << optimalPair.second << "." << endl << endl;
-    }
-
-    return 0;
+ 
+struct Edge {
+   int id, from, to, used;
+   Edge() {}
+   Edge(const int f, const int t) {
+      from = f; to = t; used = 0;
+   }
+};
+ 
+int n;
+vector<vector<Edge>> edges;
+int degree[30];
+int out[30];
+vector<Edge> L;
+vector<string> words[26][26];
+ 
+void genEulerPath(const int u, const Edge& e) {
+   for (int i = 0; i < (int)edges[u].size(); i++) {
+      if (!edges[u][i].used) {
+         edges[u][i].used = 1;
+         genEulerPath(edges[u][i].to, edges[u][i]);
+      }
+   }
+   L.push_back(e);
 }
-
-// Find a pair (i, j) in arr such that i <= j and i + j = sum.
-// If there are multiple such pairs, choose the pair that minimizes j - i.
-pair<int, int> findExactSum(vector<int> & arr, int sum)
-{
-    // Sort the vector in non-decreasing order
-    sort(arr.begin(), arr.end());
-
-    pair<int, int> optimalPair;
-    bool notInitialize = true;
-
-    int left = 0;
-    int right = arr.size() - 1;
-    while(left < right)
-    {
-        if(arr[left] + arr[right] > sum)
-            // Should reduce the sum
-            right--;
-        else
-            if(arr[left] + arr[right] < sum)
-                left++;
-            else
-            {
-                // Equality happens
-                if(notInitialize)
-                {
-                    notInitialize = false;
-                    optimalPair = make_pair(arr[left], arr[right]);
-                }
-                else
-                {
-                    if(optimalPair.second - optimalPair.first > arr[right] - arr[left])
-                        optimalPair = make_pair(arr[left], arr[right]);
-                }
-                left++;
-                right--;
-            }
-    }
-
-    return optimalPair;
+ 
+bool check(const int st) {
+   for (int i = 0; i < 26; i++)
+      for (auto& e : edges[i])
+         e.used = 0;
+   L.clear();
+   genEulerPath(st, Edge());
+   L.pop_back();
+ 
+   if ((int)L.size() != n)
+      return false;
+   auto it = L.rbegin();
+   auto prv = it;
+   it++;
+   bool flag = 1;
+   while (it != L.rend() && flag) {
+      if (prv->to != it->from)
+         flag = 0;
+      prv = it++;
+   }
+   if (!flag)
+      return false;
+   return true;
+}
+ 
+int main() {
+   int T, odd;
+   scanf("%d", &T);
+   char S[30];
+   for (int t = 1; t <= T; t++) {
+      for (int i = 0; i < 26; i++)
+         for (int j = 0; j < 26; j++)
+            words[i][j].clear();
+      scanf("%d", &n);
+      memset(degree, 0, sizeof(degree));
+      edges.assign(30, vector<Edge>());
+      int st;
+      for (int i = 0; i < n; i++) {
+         scanf(" %s", S);
+         int len = strlen(S);
+         words[S[0] - 'a'][S[len - 1] - 'a'].push_back(S);
+         degree[S[0] - 'a']++;
+         degree[S[len - 1] - 'a']++;
+         edges[S[0] - 'a'].push_back(Edge(S[0] - 'a', S[len - 1] - 'a'));
+         st = S[0] - 'a';
+      }
+      int odd = 0;
+      vector<int> oddv;
+      for (int i = 0; i < 26; i++) {
+         if (degree[i] & 1) {
+            oddv.push_back(i);
+            odd++;
+         }
+      }
+ 
+      if ((odd != 0  && odd != 2) || (odd == 2 && (!check(oddv[0]) && !check(oddv[1]))) || (odd == 0 && !check(st)))
+         printf("Case %d: No\n", t);
+      else {
+         printf("Case %d: Yes\n", t);
+         Edge e = L.back();
+         L.pop_back();
+         printf("%s", words[e.from][e.to].back().c_str());
+         words[e.from][e.to].pop_back();
+         while (!L.empty()) {
+            e = L.back();
+            L.pop_back();
+            printf(" %s", words[e.from][e.to].back().c_str());
+            words[e.from][e.to].pop_back();
+         }
+         puts("");
+      }
+   }
+   return 0;
 }

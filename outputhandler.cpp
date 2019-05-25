@@ -1,5 +1,6 @@
 #include <QDebug>
 #include "outputhandler.h"
+#include <QCoreApplication>
 
 OutputHandler::OutputHandler(QObject *parent, Editor * const ac, Editor * const user, QLineEdit * const line) :
 QObject(parent), acOut(ac), userOut(user), resultLine(line) {
@@ -19,7 +20,7 @@ QObject(parent), acOut(ac), userOut(user), resultLine(line) {
     white.setBackground(QBrush(QColor(255, 255, 255)));
 }
 
-void OutputHandler::setExecutionTime(const int time) {
+void OutputHandler::setExecutionTime(const qint64 time) {
     executionTime = time;
 }
 
@@ -61,6 +62,7 @@ void OutputHandler::userProgTimedOut() {
 }
 
 void OutputHandler::userProgCrashed() {
+    userOut->setPlainText("An error has occurred\nduring execution.");
     acOut->clear();
     comparisonFinished();
 }
@@ -104,6 +106,10 @@ void OutputHandler::compareOutputs() {
 
     while (!cleared) {
         lineIdx++;
+
+        if (lineIdx % 50 == 0)
+            QCoreApplication::processEvents();
+
         if (!userFinished && !std::getline(userStream, userLine))
             userFinished = true;
         if (!acFinished && !std::getline(acStream, acLine))

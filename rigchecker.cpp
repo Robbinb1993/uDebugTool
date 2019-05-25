@@ -10,9 +10,8 @@ RIGChecker::RIGChecker(QWidget *parent) :
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setWindowFlags(windowFlags() | Qt::WindowMinimizeButtonHint);
 
-
-    codeEditor = new CodeEditor("rig", "Random Input Generator Loader", parent);
-    connect(codeEditor, SIGNAL(outputReady(const QByteArray&, const int)), this, SLOT(RIGOutputReceived(const QByteArray&, const int)));
+    codeEditor = new CodeEditor("rig", "Random Input Generator Loader", "rig", parent);
+    connect(codeEditor, SIGNAL(outputReady(const QByteArray&, const qint64)), this, SLOT(RIGOutputReceived(const QByteArray&, const qint64)));
     connect(codeEditor, SIGNAL(executionFailed(const QByteArray&, bool)), this, SLOT(executionFailedReceived(const QByteArray&, bool)));
     connect(codeEditor, SIGNAL(loaderErrorArrived()), this, SLOT(loaderErrorReceived()));
 
@@ -31,7 +30,7 @@ void RIGChecker::terminate() {
     codeEditor->terminate();
 }
 
-void RIGChecker::RIGOutputReceived(const QByteArray& output, const int&) {
+void RIGChecker::RIGOutputReceived(const QByteArray& output, const qint64) {
     sendInput(output);
 }
 

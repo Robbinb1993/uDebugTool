@@ -18,6 +18,7 @@ public:
     int getIterations();
     void clear();
     void terminate();
+    virtual void hide() {QDialog::hide(); codeEditor->hide();}
     ~RIGChecker();
 private slots:
     void on_loadRIG_clicked();
@@ -25,7 +26,7 @@ private slots:
     void setRIG();
     void on_check_clicked();
     void executionFailedReceived(const QByteArray&, bool crashed);
-    void RIGOutputReceived(const QByteArray& output, const int&);
+    void RIGOutputReceived(const QByteArray& output, const qint64);
     void loaderErrorReceived();
 private:
     Ui::RIGChecker *ui;

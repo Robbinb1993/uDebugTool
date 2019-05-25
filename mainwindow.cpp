@@ -62,8 +62,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(rigChecker, SIGNAL(RIGCheckStart()), this, SLOT(RIGStart()));
     connect(rigChecker, SIGNAL(sendInput(const QByteArray&)), this, SLOT(RIGInputReceived(const QByteArray&)));
 
-    codeEditor = new CodeEditor("executables", "Code Loader", this);
-    connect(codeEditor, SIGNAL(outputReady(const QByteArray&, const int)), this, SLOT(userOutputReceived(const QByteArray&, const int)));
+    codeEditor = new CodeEditor("executables", "Code Loader", "executables", this);
+    connect(codeEditor, SIGNAL(outputReady(const QByteArray&, const qint64)), this, SLOT(userOutputReceived(const QByteArray&, const qint64)));
     connect(codeEditor, SIGNAL(executionFailed(const QByteArray&, bool)), this, SLOT(executionFailedReceived(const QByteArray&, bool)));
     connect(codeEditor, SIGNAL(loaderErrorArrived()), this, SLOT(loaderErrorReceived()));
 
@@ -157,10 +157,10 @@ void MainWindow::testcaseReceived(const QByteArray& result) {
     ui->inputTable->addInfo(result);
 }
 
-void MainWindow::userOutputReceived(const QByteArray& output, const int time) {
+void MainWindow::userOutputReceived(const QByteArray& output, const qint64 time) {
     if (!userOutputReady) {
-        outHandler->userOutputReceived(output);
         outHandler->setExecutionTime(time);
+        outHandler->userOutputReceived(output);
         userOutputReady = true;
         checkLoader();
     }
@@ -388,7 +388,7 @@ void MainWindow::reqHint(const QString& id) {
 void MainWindow::executionFailedReceived(const QByteArray&, bool crashed) {
     if (crashed) {
         outHandler->userProgCrashed();
-        showCodeEditor();
+        codeEditorShowTimer->start(200);
     }
     else
         outHandler->userProgTimedOut();

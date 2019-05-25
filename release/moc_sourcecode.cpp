@@ -80,7 +80,7 @@ static const uint qt_meta_data_SourceCode[] = {
       14,    0,   69,    2, 0x08 /* Private */,
 
  // signals: parameters
-    QMetaType::Void, QMetaType::QByteArray, QMetaType::Int,    3,    4,
+    QMetaType::Void, QMetaType::QByteArray, QMetaType::LongLong,    3,    4,
     QMetaType::Void, QMetaType::Int, QMetaType::QByteArray, QMetaType::QByteArray,    6,    7,    3,
     QMetaType::Void, QMetaType::QByteArray, QMetaType::Bool,    7,    9,
 
@@ -98,7 +98,7 @@ void SourceCode::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         SourceCode *_t = static_cast<SourceCode *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->outputArrived((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const int(*)>(_a[2]))); break;
+        case 0: _t->outputArrived((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const qint64(*)>(_a[2]))); break;
         case 1: _t->loaderOutputArrived((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< const QByteArray(*)>(_a[2])),(*reinterpret_cast< const QByteArray(*)>(_a[3]))); break;
         case 2: _t->executionFailed((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2]))); break;
         case 3: _t->executeProcFinished((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< QProcess::ExitStatus(*)>(_a[2]))); break;
@@ -109,7 +109,7 @@ void SourceCode::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
         {
-            typedef void (SourceCode::*_t)(const QByteArray & , const int );
+            typedef void (SourceCode::*_t)(const QByteArray & , const qint64 );
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&SourceCode::outputArrived)) {
                 *result = 0;
                 return;
@@ -169,7 +169,7 @@ int SourceCode::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void SourceCode::outputArrived(const QByteArray & _t1, const int _t2)
+void SourceCode::outputArrived(const QByteArray & _t1, const qint64 _t2)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);

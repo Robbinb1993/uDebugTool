@@ -1,66 +1,42 @@
-from sys import stdin
+while True:
+  try:
+    num_v = int(input())
+    num_e = int(input())
+    
+    e = {i: [] for i in range(num_v)}
 
-def validate_move(king, queen, queen_move):
-	if not validate_position(queen_move):
-		return False
-	if not (queen_move//8 == queen//8 or queen_move%8 == queen%8):
-		return False
-	if queen == queen_move or king == queen_move:
-		return False
+    for i in range(num_e):
+      line = input().split()
+      src, dst = int(line[0]), int(line[1])
+      e[src].append(dst)
+      e[dst].append(src)
 
-	if (queen_move//8 == king//8 and queen//8 == king//8  and (queen-queen_move)//(queen-king) >= 1):
-		return False
-	if (queen_move%8 == king%8 and queen%8 == king%8 and (queen-queen_move)//(queen-king) >= 1):
-		return False
-	return True
+    seen = {} # v_id: int: is_0_colored: boolean
+    
+    bicolorable = True
+    v_id = 0
+    v_processor = [(0, True)]
 
-def king_legal_moves(king):
-	moves = []
-	if not king%8 == 0:
-		moves += [king-1]
-	if not king%8 == 7:
-		moves += [king+1]
-	if not king//8 == 0:
-		moves += [king-8]
-	if not king//8 == 7:
-		moves += [king+8]
+    while v_id < len(v_processor):
+      p = v_processor[v_id]
+      seen[p[0]] = p[1]
 
-	return moves
+      for dst in e[p[0]]:
+        if dst in seen:
+          if p[1] == seen[dst]:
+            bicolorable = False
+            break
+        else: 
+          v_processor.append((dst, not p[1]))
+  
+      v_id += 1
 
-def allow_move(queen_move,king):
-	if queen_move in king_legal_moves(king):
-		return False
-	return True
+      if not bicolorable:
+        break
 
-def can_king_move(king,queen_move):
-	legal_moves = king_legal_moves(king)
-	moves = len(legal_moves)
-	for move in legal_moves:
-		if (move//8 == queen_move//8 or move%8 == queen_move%8 or not validate_position(move)):
-			moves -= 1
-	return moves > 0
-
-def validate_position(position):
-	return position >= 0 and position <= 63
-
-def main():
-	lines = stdin.read().splitlines()
-	for curr_Line in lines:
-		curr_Line=curr_Line.split()
-		king = int(curr_Line[0])
-		queen = int(curr_Line[1])
-		queen_move = int(curr_Line[2])
-		if king == queen or not validate_position(king) or not validate_position(queen):
-			print("Illegal state")
-		elif not validate_move(king, queen, queen_move):
-			print("Illegal move")
-		elif not allow_move(queen_move,king):
-			print("Move not allowed")
-		elif can_king_move(king,queen_move):
-			print("Continue")
-		else:
-			print("Stop")
-
-	return 
-
-main()
+    if bicolorable:
+      print("BICOLORABLE.")
+    else:
+      print("NOT BICOLORABLE.")
+  except(EOFError):
+    break

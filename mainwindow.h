@@ -86,7 +86,7 @@ private slots:
     void probNameReceived(const QString& probName);
     void multiOutputProblemDetected();
     void problemDescriptionReceived(const QString& url);
-    void userOutputReceived(const QByteArray& output, const int time);
+    void userOutputReceived(const QByteArray& output, const qint64 time);
     void acOutputReceived(const QByteArray& output);
     void executionFailedReceived(const QByteArray& error, bool crashed);
     void loaderErrorReceived();

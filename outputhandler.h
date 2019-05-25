@@ -21,14 +21,14 @@ public:
     void userProgCrashed();
     void userProgTimedOut();
     void toggleFilter();
-    void setExecutionTime(const int t);
+    void setExecutionTime(const qint64 t);
 private:
     Editor * const acOut;
     Editor * const userOut;
     QLineEdit * const resultLine;
     QTextCharFormat green, red, white;
     std::string acTxt, userTxt;
-    int executionTime;
+    qint64 executionTime;
     bool acReady, userReady, cleared, filter;
     void compareOutputs();
 signals:

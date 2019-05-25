@@ -162,7 +162,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void, QMetaType::QString,   22,
     QMetaType::Void,
     QMetaType::Void, QMetaType::QString,   25,
-    QMetaType::Void, QMetaType::QByteArray, QMetaType::Int,   27,   28,
+    QMetaType::Void, QMetaType::QByteArray, QMetaType::LongLong,   27,   28,
     QMetaType::Void, QMetaType::QByteArray,   27,
     QMetaType::Void, QMetaType::QByteArray, QMetaType::Bool,   31,   32,
     QMetaType::Void,
@@ -202,7 +202,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 18: _t->probNameReceived((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         case 19: _t->multiOutputProblemDetected(); break;
         case 20: _t->problemDescriptionReceived((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 21: _t->userOutputReceived((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const int(*)>(_a[2]))); break;
+        case 21: _t->userOutputReceived((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const qint64(*)>(_a[2]))); break;
         case 22: _t->acOutputReceived((*reinterpret_cast< const QByteArray(*)>(_a[1]))); break;
         case 23: _t->executionFailedReceived((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2]))); break;
         case 24: _t->loaderErrorReceived(); break;

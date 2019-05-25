@@ -98,7 +98,7 @@ static const uint qt_meta_data_RIGChecker[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, QMetaType::QByteArray, QMetaType::Bool,    2,   12,
-    QMetaType::Void, QMetaType::QByteArray, QMetaType::Int,   14,    2,
+    QMetaType::Void, QMetaType::QByteArray, QMetaType::LongLong,   14,    2,
     QMetaType::Void,
 
        0        // eod
@@ -119,7 +119,7 @@ void RIGChecker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 6: _t->setRIG(); break;
         case 7: _t->on_check_clicked(); break;
         case 8: _t->executionFailedReceived((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2]))); break;
-        case 9: _t->RIGOutputReceived((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const int(*)>(_a[2]))); break;
+        case 9: _t->RIGOutputReceived((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< const qint64(*)>(_a[2]))); break;
         case 10: _t->loaderErrorReceived(); break;
         default: ;
         }

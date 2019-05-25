@@ -12,10 +12,10 @@ SourceCode::SourceCode(QObject *parent) : QObject(parent) {
     connect(executeProc, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(executeProcFinished(int, QProcess::ExitStatus)));
     connect(executeProc, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(executeProcError(QProcess::ProcessError)));
     connect(&timer, SIGNAL(timeout()), this, SLOT(procTimedOut()));
+    timer.start();
 }
 
 void SourceCode::executeProcFinished(int ret, QProcess::ExitStatus status) {
-    qDebug() << status;
     if (!ret)
         outputArrived(executeProc->readAllStandardOutput(), timeMeasure.elapsed());
     else
@@ -136,6 +136,11 @@ void CompiledSourceCode::execute(const QString& input, const int timeOutValue) {
     }
 }
 
+void CompiledSourceCode::setWorkDir(const QString& workDir) {
+    SourceCode::setWorkDir(workDir);
+    compileProc->setWorkingDirectory(getExecutableDirectoryPath());
+}
+
 SourceCodeCType::SourceCodeCType(QObject* parent, const QString& type) : CompiledSourceCode(parent) {
     if (type == "C") {
         setCodeExtension(".c");
@@ -199,13 +204,12 @@ void SourceCodeJava::runExecutable(const QString& input, const int timeOutValue)
     compileList << getExecutableDirectoryPath();
     compileList << getCodeFileName();
     getExecuteProc()->start("java", compileList);
-    qDebug() << input;
     getExecuteProc()->write(input.toStdString().c_str());
     getExecuteProc()->closeWriteChannel();
     setTimer(timeOutValue);
 }
 
-void InterpretedSourceCode::runExecutable(const QString& input, const int timeOutValue) {    
+void InterpretedSourceCode::runExecutable(const QString& input, const int timeOutValue) {
     getExecuteProc()->close();
     QStringList interpretList;
     addFlagsToList(interpretList);
